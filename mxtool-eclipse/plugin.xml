@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="org.magiccube.mxtool.eclipse.builders.mxBuilder"
+         name="MagicCube MXBuilder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="org.magiccube.mxtool.eclipse.builders.MXBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="org.magiccube.mxtool.eclipse.builders.mxNature"
+         name="MagicCube MXNature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.magiccube.mxtool.eclipse.builders.MXNature">
+         </run>
+      </runtime>
+      <builder
+            id="org.magiccube.mxtool.eclipse.builders.mxBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            name="MXFramework"
+            class="org.magiccube.mxtool.eclipse.properties.MXProjectPropertyPage"
+            id="org.magiccube.mxtool.eclipse.properties.mxProjectPropertyPage">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFolder"
+            id="org.magiccube.mxtool.eclipse.contribution1">
+         <menu
+               label="MXFramework"
+               path="additions"
+               id="org.magiccube.mxtool.eclipse.menus.folderMenu">
+            <separator
+                  name="newGroup">
+            </separator>
+         </menu>
+         <action
+               label="New MX Class"
+               class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
+               menubarPath="org.magiccube.mxtool.eclipse.menus.folderMenu/newGroup"
+               enablesFor="1"
+               id="org.magiccube.mxtool.eclipse.actions.newMXClassAction">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         id="org.magiccube.mxtool.eclipse.builders.mxBuilderProblem"
+         name="MXBuilder Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="MagicCube MXFramework"
+            id="org.magiccube.mxtool.eclipse">
+      </category>
+      <wizard
+            name="New MX Class"
+            icon="icons/sample.gif"
+            category="org.magiccube.mxtool.eclipse"
+            class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizardPage"
+            id="org.magiccube.mxtool.eclipse.wizards.newMXClassWizardPage">
+      </wizard>
+   </extension>
+
+</plugin>
