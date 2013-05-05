@@ -53,13 +53,36 @@
             </separator>
          </menu>
          <action
-               label="New MX Class"
+               label="New MXApplication"
                class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
                menubarPath="org.magiccube.mxtool.eclipse.menus.folderMenu/newGroup"
                enablesFor="1"
-               id="org.magiccube.mxtool.eclipse.actions.newMXClassAction">
-         </action>
-      </objectContribution>
+               id="org.magiccube.mxtool.eclipse.actions.newMXAppClassAction"/>
+         <action
+               label="New MXScene"
+               class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
+               menubarPath="org.magiccube.mxtool.eclipse.menus.folderMenu/newGroup"
+               enablesFor="1"
+               id="org.magiccube.mxtool.eclipse.actions.newMXSceneClassAction"/>
+        <action
+               label="New MXView"
+               class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
+               menubarPath="org.magiccube.mxtool.eclipse.menus.folderMenu/newGroup"
+               enablesFor="1"
+               id="org.magiccube.mxtool.eclipse.actions.newMXViewClassAction"/>
+        <action
+               label="New MXComponent Subclass"
+               class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
+               menubarPath="org.magiccube.mxtool.eclipse.menus.folderMenu/newGroup"
+               enablesFor="1"
+               id="org.magiccube.mxtool.eclipse.actions.newMXComponentClassAction"/>
+         <action
+               label="New MXObject Subclass"
+               class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
+               menubarPath="org.magiccube.mxtool.eclipse.menus.folderMenu/newGroup"
+               enablesFor="1"
+               id="org.magiccube.mxtool.eclipse.actions.newMXObjectClassAction"/>
+       </objectContribution>
    </extension>
    <extension
          id="org.magiccube.mxtool.eclipse.builders.mxBuilderProblem"
@@ -79,12 +102,35 @@
             id="org.magiccube.mxtool.eclipse">
       </category>
       <wizard
-            name="New MX Class"
+            name="New MXObject Subclass"
             icon="icons/sample.gif"
             category="org.magiccube.mxtool.eclipse"
-            class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizardPage"
-            id="org.magiccube.mxtool.eclipse.wizards.newMXClassWizardPage">
-      </wizard>
+            class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard"
+            id="org.magiccube.mxtool.eclipse.wizards.newMXObjectClassWizard"/>
+      <wizard
+            name="New MXComponent Subclass"
+            icon="icons/sample.gif"
+            category="org.magiccube.mxtool.eclipse"
+            class="org.magiccube.mxtool.eclipse.wizards.NewMXComponentClassWizard"
+            id="org.magiccube.mxtool.eclipse.wizards.newMXComponentClassWizard"/>
+      <wizard
+            name="New MXView"
+            icon="icons/sample.gif"
+            category="org.magiccube.mxtool.eclipse"
+            class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard"
+            id="org.magiccube.mxtool.eclipse.wizards.newMXViewClassWizard"/>
+      <wizard
+            name="New MXScene"
+            icon="icons/sample.gif"
+            category="org.magiccube.mxtool.eclipse"
+            class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard"
+            id="org.magiccube.mxtool.eclipse.wizards.newMXSceneClassWizard"/>
+      <wizard
+            name="New MXApplication"
+            icon="icons/sample.gif"
+            category="org.magiccube.mxtool.eclipse"
+            class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard"
+            id="org.magiccube.mxtool.eclipse.wizards.newMXAppClassWizard"/>
    </extension>
 
 </plugin>

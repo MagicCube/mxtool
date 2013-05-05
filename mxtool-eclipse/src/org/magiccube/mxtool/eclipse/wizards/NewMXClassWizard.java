@@ -26,29 +26,36 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 
 public class NewMXClassWizard extends Wizard implements INewWizard
 {
-	private NewMXClassOptions _options = null;
+	private MXClassGenOptions _options = null;
 	private NewMXClassWizardPage _basicPage = null;
 	private ISelection _selection = null;
 
 	public NewMXClassWizard()
 	{
-		this(new NewMXClassOptions());
+		this(new MXClassGenOptions());
 	}
 
-	public NewMXClassWizard(NewMXClassOptions p_options)
+	public NewMXClassWizard(MXClassGenOptions p_options)
 	{
 		super();
+		_basicPage = new NewMXClassWizardPage();
 		_options = p_options;
 		setNeedsProgressMonitor(true);
+	}
+	
+	public void init(IWorkbench workbench, IStructuredSelection p_selection)
+	{
+		this._selection = p_selection;
+		_basicPage.init(_options, p_selection);
 	}
 
 
 	public void addPages()
 	{
-		_basicPage = new NewMXClassWizardPage(_selection, _options);
 		addPage(_basicPage);
 	}
 
@@ -154,11 +161,5 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 		IStatus status = new Status(IStatus.ERROR,
 				"org.magiccube.mxtool.eclipse", IStatus.OK, message, null);
 		throw new CoreException(status);
-	}
-
-
-	public void init(IWorkbench workbench, IStructuredSelection p_selection)
-	{
-		this._selection = p_selection;
 	}
 }

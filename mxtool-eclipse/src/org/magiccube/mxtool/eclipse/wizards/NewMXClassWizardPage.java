@@ -1,8 +1,10 @@
 package org.magiccube.mxtool.eclipse.wizards;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
@@ -14,26 +16,36 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 import org.magiccube.mxtool.eclipse.properties.MXProjectProperties;
 
 
 public class NewMXClassWizardPage extends WizardPage
 {
-	private NewMXClassOptions _options = null;
+	private MXClassGenOptions _options = null;
 	protected Combo namespaceCombo = null;
 	protected Text classNameText = null;
 	protected Combo superClassCombo = null;
-	protected Button overrideInitFunctionCheckbox = null;
 	protected Button singletonCheckbox = null;
 	
-	public NewMXClassWizardPage(ISelection p_selection, NewMXClassOptions p_options)
+	public NewMXClassWizardPage()
 	{
 		super("basicPage");
+	}
+	
+	public void init(MXClassGenOptions p_options, IStructuredSelection p_selection)
+	{
 		_options = p_options;
-		setTitle("New " + _options.classType + " Class");
-		setDescription("This wizard creates a new javascript class with MXFramework.");
+		setTitle("New " + _options.superClassType + " Class");
+		setDescription("This wizard creates a new " + _options.superClassType + " subclass with MXFramework.");
 		_selection = (IStructuredSelection) p_selection;
 
+		if (_selection == null || _selection.size() == 0)
+		{
+			updateStatus("Please select a project first.");
+			return;
+		}
+		
 		IResource resource = (IResource) _selection.getFirstElement();
 		_project = resource.getProject();
 		try
@@ -48,10 +60,25 @@ public class NewMXClassWizardPage extends WizardPage
 		if (_projectProperties == null || !_projectProperties.isEnabled())
 		{
 			updateStatus("MXFramework of the current project haven't been enabled yet. You can enable it in the 'MXFramework' page of Project Properties.");
+			return;
+		}
+		
+		
+		
+		IFolder scriptFolder = _project.getFolder(_projectProperties.getScriptPath());
+		if (scriptFolder == null)
+		{
+			updateStatus("The script path '" + _projectProperties.getScriptPath() + "' is not currently available. You can modify it in the 'MXFramework' page of Project Properties.");
+			return;
+		}
+		
+		if (resource.getFullPath().toString().startsWith(scriptFolder.getFullPath().toString()))
+		{
+			IPath relPath = resource.getFullPath().makeRelativeTo(scriptFolder.getFullPath());
+			String ns = relPath.toString().replaceAll("\\/", ".");
+			_options.namespace = ns;
 		}
 	}
-	
-	
 	
 	
 	private IStructuredSelection _selection;
@@ -87,21 +114,33 @@ public class NewMXClassWizardPage extends WizardPage
 		classNameText = _appendText(container, "Class name:");
 		singletonCheckbox = _appendCheckbox(container, "Singleton class");
 		superClassCombo = _appendCombo(container, "Super class:");
-		overrideInitFunctionCheckbox = _appendCheckbox(container, "Override 'init' function (only effected when inherits from MXComponent's subclass)");
 		
 		setControl(container);
+		
+		applyOptions(_options);
 	}
 
 
 
 
 
+
+	protected void applyOptions(MXClassGenOptions p_options)
+	{
+		namespaceCombo.setText(p_options.namespace != null ? p_options.namespace : "");
+		classNameText.setText(p_options.className);
+		singletonCheckbox.setSelection(p_options.isSingleton);
+		superClassCombo.setText(p_options.superClass != null ? p_options.superClass : "");
+	}
 
 	protected void updateStatus(String message)
 	{
 		setErrorMessage(message);
 		setPageComplete(message == null);
 	}
+	
+	
+	
 	
 	private Text _appendText(Composite p_parent, String p_title)
 	{
