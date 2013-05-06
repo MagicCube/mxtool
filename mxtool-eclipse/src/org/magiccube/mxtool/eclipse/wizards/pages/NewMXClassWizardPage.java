@@ -4,7 +4,10 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.fieldassist.AutoCompleteField;
+import org.eclipse.jface.fieldassist.ComboContentAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -20,6 +23,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 import org.magiccube.mxtool.eclipse.properties.MXProjectProperties;
+import org.magiccube.mxtool.eclipse.resource.MXProjectResource;
 import org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard;
 
 public class NewMXClassWizardPage extends WizardPage implements ModifyListener
@@ -76,6 +80,19 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 		}
 	}
 	
+	protected MXProjectResource getMXProjectResource()
+	{
+		if (getWizard() != null)
+		{
+			return ((NewMXClassWizard) getWizard()).getMXProjectResource();
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	
 	private MXClassGenOptions _genOptions = null;
 	protected MXClassGenOptions getGenOptions()
 	{
@@ -89,10 +106,21 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 		gridLayout.verticalSpacing = 9;
 		container.setLayout(gridLayout);
 
-		namespaceCombo = addCombo(container, "Namespace:");
+		String[] namespaces = null;
+		String[] classNames = null;
+		try
+		{
+			namespaces = getMXProjectResource().getNamespaces();
+			classNames = getMXProjectResource().getClassNames();
+		}
+		catch (CoreException e)
+		{
+			e.printStackTrace();
+		}
+		namespaceCombo = addCombo(container, "Namespace:", namespaces);
 		classNameText = addText(container, "Class name:");
 		singletonCheckbox = addCheckbox(container, "Singleton class");
-		superClassCombo = addCombo(container, "Super class:");
+		superClassCombo = addCombo(container, "Super class:", classNames);
 		addSubcontrols(container);
 
 		setControl(container);
@@ -182,6 +210,17 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 			setErrorMessage("Namespace is not validated.");
 			return false;
 		}
+		
+		if (validateClassName())
+		{
+			Path filePath = getGenOptions().getJavaScriptPath();
+			IFile file = getProject().getFile(filePath);
+			if (!file.getParent().exists())
+			{
+				setMessage("A new folder '" + file.getParent().getProjectRelativePath() + "' will be created.", INFORMATION);
+			}
+		}
+		
 		return true;
 	}
 
@@ -211,13 +250,19 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 			return false;
 		}
 		
-		if (_genOptions.classNamePostfix != null && !classNameText.getText().endsWith(_genOptions.classNamePostfix))
+		if (_genOptions.classNamePostfix != null)
 		{
-			setMessage("The class name is suggested to be ended with '" + _genOptions.classNamePostfix + "'.", WARNING);
-		}
-		else
-		{
-			setMessage("");
+			if (!classNameText.getText().endsWith(_genOptions.classNamePostfix))
+			{
+				setMessage("The class name is suggested to be ended with '" + _genOptions.classNamePostfix + "'.", WARNING);
+			}
+			else
+			{
+				if (getMessage() != null && getMessage().equals("The class name is suggested to be ended with '" + _genOptions.classNamePostfix + "'."))
+				{
+					setMessage("");
+				}
+			}
 		}
 		
 		return true;
@@ -232,6 +277,28 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 			setErrorMessage("Super class can not be empty.");
 			return false;
 		}
+		
+		boolean found = false;
+		for (String item : superClassCombo.getItems())
+		{
+			if (item.equals(superClassCombo.getText()))
+			{
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+		{
+			setMessage("The super class is not found", WARNING);
+		}
+		else
+		{
+			if (getMessage() != null && getMessage().equals("The super class is not found"))
+			{
+				setMessage("");
+			}
+		}
+		
 		return true;
 	}
 
@@ -254,17 +321,27 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 		return addText(p_parent, p_title, "");
 	}
 
-	protected Combo addCombo(Composite p_parent, String p_title)
+	protected Combo addCombo(Composite p_parent, String p_title, String[] p_items)
 	{
 		Label label = new Label(p_parent, SWT.NULL);
 		label.setText(p_title);
 
 		Combo combo = new Combo(p_parent, SWT.BORDER | SWT.SINGLE);
+		if (p_items != null)
+		{
+			combo.setItems(p_items);
+			new AutoCompleteField(combo, new ComboContentAdapter(), p_items);
+		}
 		combo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		combo.addModifyListener(this);
 
 		new Label(p_parent, SWT.NULL);
 		return combo;
+	}
+	
+	protected Combo addCombo(Composite p_parent, String p_title)
+	{
+		return addCombo(p_parent, p_title, null);
 	}
 
 	protected Button addCheckbox(Composite p_parent, String p_title, boolean p_checked)

@@ -1,4 +1,4 @@
-package org.magiccube.mxtool.eclipse.utils;
+package org.magiccube.mxtool.eclipse.resource;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;

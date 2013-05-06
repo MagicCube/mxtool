@@ -30,7 +30,8 @@ import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 import org.magiccube.mxtool.code.gen.MXClassGenerator;
 import org.magiccube.mxtool.code.gen.MXHtmlGenerator;
 import org.magiccube.mxtool.eclipse.properties.MXProjectProperties;
-import org.magiccube.mxtool.eclipse.utils.ResourceHelper;
+import org.magiccube.mxtool.eclipse.resource.MXProjectResource;
+import org.magiccube.mxtool.eclipse.resource.ResourceHelper;
 import org.magiccube.mxtool.eclipse.wizards.pages.NewMXClassWizardPage;
 
 public abstract class NewMXClassWizard extends Wizard implements INewWizard
@@ -59,27 +60,20 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 		
 		IResource resource = (IResource) _selection.getFirstElement();
 		_project = resource.getProject();
-		try
-		{
-			_projectProperties = MXProjectProperties.getProperties(_project);
-		}
-		catch (CoreException e)
-		{
+		_mxProjectResource = new MXProjectResource(_project);
 
-		}
-
-		if (_projectProperties == null || !_projectProperties.isEnabled())
+		if (getProjectProperties() == null || !getProjectProperties().isEnabled())
 		{
 			getBasicPage().setErrorMessage("MXFramework of the current project haven't been enabled yet. You can enable it in the 'MXFramework' page of Project Properties.");
 			return;
 		}
 		
 		
-		_genOptions.scriptPath = _projectProperties.getScriptPath();
-		IFolder scriptFolder = _project.getFolder(_projectProperties.getScriptPath());
+		_genOptions.scriptPath = getProjectProperties().getScriptPath();
+		IFolder scriptFolder = _project.getFolder(getProjectProperties().getScriptPath());
 		if (scriptFolder == null)
 		{
-			getBasicPage().setErrorMessage("The script path '" + _projectProperties.getScriptPath() + "' is not currently available. You can modify it in the 'MXFramework' page of Project Properties.");
+			getBasicPage().setErrorMessage("The script path '" + getProjectProperties().getScriptPath() + "' is not currently available. You can modify it in the 'MXFramework' page of Project Properties.");
 			return;
 		}
 		
@@ -107,11 +101,18 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 		return _project;
 	}
 	
-	private MXProjectProperties _projectProperties = null;
+	private MXProjectResource _mxProjectResource = null;
+	public MXProjectResource getMXProjectResource()
+	{
+		return _mxProjectResource;
+	}
+	
 	public MXProjectProperties getProjectProperties()
 	{
-		return _projectProperties;
+		return _mxProjectResource.getProjectProperties();
 	}
+	
+	
 	
 	private MXClassGenOptions _genOptions = null;
 	public MXClassGenOptions getGenOptions()
