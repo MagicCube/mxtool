@@ -52,6 +52,7 @@
                   name="newGroup">
             </separator>
          </menu>
+         <!--
          <action
                label="New MXApplication"
                class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
@@ -70,6 +71,7 @@
                menubarPath="org.magiccube.mxtool.eclipse.menus.folderMenu/newGroup"
                enablesFor="1"
                id="org.magiccube.mxtool.eclipse.actions.newMXViewClassAction"/>
+        -->
         <action
                label="New MXComponent Subclass"
                class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
@@ -113,6 +115,7 @@
             category="org.magiccube.mxtool.eclipse"
             class="org.magiccube.mxtool.eclipse.wizards.NewMXComponentClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXComponentClassWizard"/>
+      <!--
       <wizard
             name="New MXView"
             icon="icons/sample.gif"
@@ -131,6 +134,7 @@
             category="org.magiccube.mxtool.eclipse"
             class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXAppClassWizard"/>
+      -->
    </extension>
 
 </plugin>

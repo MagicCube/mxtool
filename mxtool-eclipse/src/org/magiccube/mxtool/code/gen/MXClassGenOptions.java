@@ -3,6 +3,8 @@ package org.magiccube.mxtool.code.gen;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Path;
+
 public class MXClassGenOptions
 {
 	public String scriptPath = null;
@@ -57,4 +59,20 @@ public class MXClassGenOptions
 		importedClasses.add("mx.scn.Scene");
 		importedClasses.add("mx.app.Application");
 	}
+	
+	
+	
+	public String getFullClassName()
+	{
+		return namespace + "." + className;
+	}
+	
+	
+	public Path getAbsolutePath()
+	{
+		String path = scriptPath + "/" + namespace.replaceAll("\\.", "\\/") + "/";
+		path += className + ".js";
+		return new Path(path);
+	}
+	
 }

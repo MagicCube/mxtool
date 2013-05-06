@@ -109,7 +109,7 @@ public class MXClassGenerator
 		builder.append("    {\r\n");
 		builder.append("        if (me.canConstruct())\r\n");
 		builder.append("        {\r\n");
-		builder.append("            base._(p_options);\r\n");
+		builder.append("            base._(p_options);\r\n\r\n");
 		builder.append("            // TODO Add your own construction code here.\r\n");
 		builder.append("        }\r\n");
 		builder.append("    };\r\n");
@@ -120,7 +120,7 @@ public class MXClassGenerator
 		builder.append("    base.init = me.init;\r\n");
 		builder.append("    me.init = function(p_options)\r\n");
 		builder.append("    {\r\n");
-		builder.append("        base.init(p_options);\r\n");
+		builder.append("        base.init(p_options);\r\n\r\n");
 		builder.append("        // TODO Add your own initializing code here.\r\n");
 		builder.append("    };\r\n");
 	}
