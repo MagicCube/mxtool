@@ -53,7 +53,7 @@ public class MXClassGenOptions
 		}
 		else if (superClassType.equals("MXApp"))
 		{
-			className = "NewApp";
+			className = "App";
 			superClass = "mx.app.Application";
 			classNamePostfix = "App";
 		}
@@ -93,6 +93,15 @@ public class MXClassGenOptions
 			ns = namespace.substring(0, pos) + ".res.";
 		}
 		String path = scriptPath + "/" + ns.replaceAll("\\.", "\\/") + className + ".css";
+		return new Path(path);
+	}
+
+	public Path getDebugHtmlPath()
+	{
+		int pos = scriptPath.lastIndexOf("/");
+		String path = scriptPath.substring(0, pos);
+		path += "/" + className;
+		path += "-debug.html";
 		return new Path(path);
 	}
 }

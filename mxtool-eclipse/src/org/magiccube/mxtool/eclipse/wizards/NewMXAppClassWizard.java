@@ -1,7 +1,9 @@
 package org.magiccube.mxtool.eclipse.wizards;
 
 import org.magiccube.mxtool.code.gen.MXAppClassGenerator;
+import org.magiccube.mxtool.code.gen.MXAppHtmlGenerator;
 import org.magiccube.mxtool.code.gen.MXClassGenOptions;
+import org.magiccube.mxtool.code.gen.MXHtmlGenerator;
 import org.magiccube.mxtool.eclipse.wizards.pages.NewMXAppClassWizardPage;
 import org.magiccube.mxtool.eclipse.wizards.pages.NewMXClassWizardPage;
 
@@ -24,10 +26,20 @@ public class NewMXAppClassWizard extends NewMXClassWizard
 		return _basicPage;
 	}
 	
+	
 	private MXAppClassGenerator _classGenerator = new MXAppClassGenerator();
 	@Override
 	protected MXAppClassGenerator getClassGenerator()
 	{
 		return _classGenerator;
+	}
+
+	
+	
+	private MXAppHtmlGenerator _htmlGenerator = new MXAppHtmlGenerator();
+	@Override
+	protected MXHtmlGenerator getHtmlGenerator()
+	{
+		return _htmlGenerator;
 	}
 }

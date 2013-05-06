@@ -28,6 +28,7 @@ import org.eclipse.ui.ide.IDE;
 import org.magiccube.mxtool.code.gen.CssGenerator;
 import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 import org.magiccube.mxtool.code.gen.MXClassGenerator;
+import org.magiccube.mxtool.code.gen.MXHtmlGenerator;
 import org.magiccube.mxtool.eclipse.properties.MXProjectProperties;
 import org.magiccube.mxtool.eclipse.utils.ResourceHelper;
 import org.magiccube.mxtool.eclipse.wizards.pages.NewMXClassWizardPage;
@@ -119,6 +120,7 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 	}
 	
 	protected abstract MXClassGenerator getClassGenerator();
+	protected abstract MXHtmlGenerator getHtmlGenerator();
 	
 	private NewMXClassWizardPage _basicPage = null;
 	protected NewMXClassWizardPage getBasicPage()
@@ -186,6 +188,11 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 	protected void doFinish(IProgressMonitor p_monitor) throws CoreException
 	{
 		IFile javaScriptFile = genJavaScriptFile(p_monitor);
+		if (getGenOptions().genHtml && getHtmlGenerator() != null)
+		{
+			IFile htmlFile = genHtmlFile(p_monitor);
+			openFile(htmlFile, p_monitor);
+		}
 		if (getGenOptions().genCss)
 		{
 			IFile cssFile = genCssFile(p_monitor);
@@ -208,6 +215,29 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 		try
 		{
 			InputStream stream = openContentStream(js);
+			file.create(stream, true, p_monitor);
+			stream.close();
+		}
+		catch (IOException e)
+		{
+			
+		}
+		return file;
+	}
+
+	protected IFile genHtmlFile(IProgressMonitor p_monitor) throws CoreException
+	{
+		String html = getHtmlGenerator().generateCode(getGenOptions()).toString();
+		IFile file = getProject().getFile(getGenOptions().getDebugHtmlPath());
+		if (file.exists())
+		{
+			_throwCoreException(file.getFullPath() + " already exists.");
+		}
+		IFolder folder = (IFolder)file.getParent();
+		ResourceHelper.prepareFolder(folder, p_monitor);
+		try
+		{
+			InputStream stream = openContentStream(html);
 			file.create(stream, true, p_monitor);
 			stream.close();
 		}

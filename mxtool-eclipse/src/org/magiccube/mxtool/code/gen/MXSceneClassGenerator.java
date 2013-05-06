@@ -37,6 +37,7 @@ public class MXSceneClassGenerator extends MXClassGenerator
 			builder.append("        if (!isPoppedBack)\r\n");
 			builder.append("        {\r\n");
 			builder.append("            // TODO the scene is activated normally.\r\n");
+			builder.append("            console.log(\"").append(p_options.getFullClassName()).append(" is now activated.\");\r\n");
 			builder.append("        }\r\n");
 			builder.append("        else\r\n");
 			builder.append("        {\r\n");

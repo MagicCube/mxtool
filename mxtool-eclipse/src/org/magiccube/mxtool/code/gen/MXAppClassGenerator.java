@@ -47,9 +47,10 @@ public class MXAppClassGenerator extends MXClassGenerator
 		super.writeBody(builder, p_options);
 
 		builder.append("    base.run = me.run;\r\n");
-		builder.append("    me.run = function(p_options)\r\n");
+		builder.append("    me.run = function(args)\r\n");
 		builder.append("    {\r\n");
-		builder.append("        // TODO add your app-starting code here.\r\n");
+		builder.append("        // TODO add your application starting logic here.\r\n");
+		builder.append("        console.log(\"").append(p_options.getFullClassName()).append(" is now running.\");\r\n");
 		builder.append("    \r\n");
 		builder.append("    };\r\n");
 	}

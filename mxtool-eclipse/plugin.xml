@@ -103,31 +103,31 @@
       </category>
       <wizard
             name="New MXObject Subclass"
-            icon="icons/sample.gif"
+            icon="icons/mx.png"
             category="org.magiccube.mxtool.eclipse"
             class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXObjectClassWizard"/>
       <wizard
             name="New MXComponent Subclass"
-            icon="icons/sample.gif"
+            icon="icons/mx.png"
             category="org.magiccube.mxtool.eclipse"
             class="org.magiccube.mxtool.eclipse.wizards.NewMXComponentClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXComponentClassWizard"/>
       <wizard
             name="New MX View"
-            icon="icons/sample.gif"
+            icon="icons/mx.png"
             category="org.magiccube.mxtool.eclipse"
             class="org.magiccube.mxtool.eclipse.wizards.NewMXViewClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXViewClassWizard"/>
       <wizard
             name="New MX Scene"
-            icon="icons/sample.gif"
+            icon="icons/mx.png"
             category="org.magiccube.mxtool.eclipse"
             class="org.magiccube.mxtool.eclipse.wizards.NewMXSceneClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXSceneClassWizard"/>
       <wizard
             name="New MX Application"
-            icon="icons/sample.gif"
+            icon="icons/mx.png"
             category="org.magiccube.mxtool.eclipse"
             class="org.magiccube.mxtool.eclipse.wizards.NewMXAppClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXAppClassWizard"/>
