@@ -4,6 +4,7 @@ import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 import org.magiccube.mxtool.code.gen.MXClassGenerator;
 import org.magiccube.mxtool.code.gen.MXHtmlGenerator;
 import org.magiccube.mxtool.code.gen.MXSceneClassGenerator;
+import org.magiccube.mxtool.code.gen.MXSceneHtmlGenerator;
 import org.magiccube.mxtool.eclipse.wizards.pages.NewMXClassWizardPage;
 import org.magiccube.mxtool.eclipse.wizards.pages.NewMXSceneClassWizardPage;
 
@@ -33,9 +34,10 @@ public class NewMXSceneClassWizard extends NewMXClassWizard
 		return _classGenerator;
 	}
 
+	private MXSceneHtmlGenerator _htmlGenerator = new MXSceneHtmlGenerator();
 	@Override
 	protected MXHtmlGenerator getHtmlGenerator()
 	{
-		return null;
+		return _htmlGenerator;
 	}
 }

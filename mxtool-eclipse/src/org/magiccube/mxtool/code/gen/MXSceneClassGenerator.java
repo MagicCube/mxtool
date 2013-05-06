@@ -31,7 +31,7 @@ public class MXSceneClassGenerator extends MXClassGenerator
 		if ((Boolean)p_options.properties.get("overrideActivate"))
 		{
 			builder.append("    base.activate = me.activate;\r\n");
-			builder.append("    me.activate = function(args, isBack)\r\n");
+			builder.append("    me.activate = function(args, isPoppedBack)\r\n");
 			builder.append("    {\r\n");
 			builder.append("        base.activate(args, isPoppedBack);\r\n\r\n");
 			builder.append("        if (!isPoppedBack)\r\n");
