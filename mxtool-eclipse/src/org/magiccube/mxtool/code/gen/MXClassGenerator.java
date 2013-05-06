@@ -27,7 +27,7 @@ public class MXClassGenerator
 			overrideInit(builder, p_options);
 		}
 		writeLine(builder);
-		writeBody(builder);
+		writeBody(builder, p_options);
 		writeLine(builder);
 		writeEndOfClass(builder, p_options);
 		if (p_options.isSingleton)
@@ -111,7 +111,7 @@ public class MXClassGenerator
 		builder.append("        if (me.canConstruct())\r\n");
 		builder.append("        {\r\n");
 		builder.append("            base._(p_options);\r\n\r\n");
-		builder.append("            // TODO Add your own construction code here.\r\n");
+		builder.append("            // TODO add your own construction code here.\r\n");
 		builder.append("        }\r\n");
 		builder.append("    };\r\n");
 	}
@@ -122,13 +122,13 @@ public class MXClassGenerator
 		builder.append("    me.init = function(p_options)\r\n");
 		builder.append("    {\r\n");
 		builder.append("        base.init(p_options);\r\n\r\n");
-		builder.append("        // TODO Add your own initializing code here.\r\n");
+		builder.append("        // TODO add your own initializing code here.\r\n");
 		builder.append("    };\r\n");
 	}
 	
 	
 	
-	protected void writeBody(StringBuilder builder)
+	protected void writeBody(StringBuilder builder, MXClassGenOptions p_options)
 	{
 	
 	}

@@ -3,16 +3,16 @@ package org.magiccube.mxtool.eclipse.actions;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.magiccube.mxtool.code.gen.MXClassGenOptions;
+import org.magiccube.mxtool.eclipse.wizards.NewMXAppClassWizard;
 import org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard;
 import org.magiccube.mxtool.eclipse.wizards.NewMXComponentClassWizard;
 import org.magiccube.mxtool.eclipse.wizards.NewMXObjectClassWizard;
+import org.magiccube.mxtool.eclipse.wizards.NewMXSceneClassWizard;
 import org.magiccube.mxtool.eclipse.wizards.NewMXViewClassWizard;
 
 public class NewMXClassAction implements IObjectActionDelegate
@@ -43,6 +43,14 @@ public class NewMXClassAction implements IObjectActionDelegate
 		else if (superClassType.equals("MXView"))
 		{
 			wizard = new NewMXViewClassWizard();
+		}
+		else if (superClassType.equals("MXScene"))
+		{
+			wizard = new NewMXSceneClassWizard();
+		}
+		else if (superClassType.equals("MXApp"))
+		{
+			wizard = new NewMXAppClassWizard();
 		}
 		else
 		{

@@ -52,22 +52,20 @@
                   name="newGroup">
             </separator>
          </menu>
-         <!--
          <action
-               label="New MXApplication"
+               label="New MX Application"
                class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
                menubarPath="org.magiccube.mxtool.eclipse.menus.folderMenu/newGroup"
                enablesFor="1"
                id="org.magiccube.mxtool.eclipse.actions.newMXAppClassAction"/>
          <action
-               label="New MXScene"
+               label="New MX Scene"
                class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
                menubarPath="org.magiccube.mxtool.eclipse.menus.folderMenu/newGroup"
                enablesFor="1"
                id="org.magiccube.mxtool.eclipse.actions.newMXSceneClassAction"/>
-        -->
         <action
-               label="New MXView"
+               label="New MX View"
                class="org.magiccube.mxtool.eclipse.actions.NewMXClassAction"
                menubarPath="org.magiccube.mxtool.eclipse.menus.folderMenu/newGroup"
                enablesFor="1"
@@ -116,25 +114,23 @@
             class="org.magiccube.mxtool.eclipse.wizards.NewMXComponentClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXComponentClassWizard"/>
       <wizard
-            name="New MXView"
+            name="New MX View"
             icon="icons/sample.gif"
             category="org.magiccube.mxtool.eclipse"
             class="org.magiccube.mxtool.eclipse.wizards.NewMXViewClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXViewClassWizard"/>
-      <!--
       <wizard
-            name="New MXScene"
+            name="New MX Scene"
             icon="icons/sample.gif"
             category="org.magiccube.mxtool.eclipse"
-            class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard"
+            class="org.magiccube.mxtool.eclipse.wizards.NewMXSceneClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXSceneClassWizard"/>
       <wizard
-            name="New MXApplication"
+            name="New MX Application"
             icon="icons/sample.gif"
             category="org.magiccube.mxtool.eclipse"
-            class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard"
+            class="org.magiccube.mxtool.eclipse.wizards.NewMXAppWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXAppClassWizard"/>
-      -->
    </extension>
 
 </plugin>

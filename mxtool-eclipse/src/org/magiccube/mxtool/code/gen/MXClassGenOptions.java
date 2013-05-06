@@ -1,7 +1,9 @@
 package org.magiccube.mxtool.code.gen;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.Path;
 
@@ -17,6 +19,7 @@ public class MXClassGenOptions
 	public boolean genCss = false;
 	public boolean genHtml = false;
 	public List<String> importedClasses = new ArrayList<String>();
+	public Map<String, Object> properties = new HashMap<String, Object>(); 
 	
 	public MXClassGenOptions()
 	{

@@ -10,7 +10,7 @@ public class NewMXViewClassWizardPage extends NewMXClassWizardPage
 	@Override
 	protected void addSubcontrols(Composite p_container)
 	{
-		genCssCheckbox = addCheckbox(p_container, "Generate CSS file in 'res' folder");
+		genCssCheckbox = addCheckbox(p_container, "Generate CSS");
 	}
 
 	public boolean validate()

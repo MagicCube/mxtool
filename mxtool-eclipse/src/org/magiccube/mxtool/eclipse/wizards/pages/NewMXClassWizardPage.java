@@ -235,17 +235,23 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 		return true;
 	}
 
-	protected Text addText(Composite p_parent, String p_title)
+	protected Text addText(Composite p_parent, String p_title, String p_text)
 	{
 		Label label = new Label(p_parent, SWT.NULL);
 		label.setText(p_title);
 
 		Text text = new Text(p_parent, SWT.BORDER | SWT.SINGLE);
+		text.setText(p_text);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		text.addModifyListener(this);
 
 		new Label(p_parent, SWT.NULL);
 		return text;
+	}
+	
+	protected Text addText(Composite p_parent, String p_title)
+	{
+		return addText(p_parent, p_title, "");
 	}
 
 	protected Combo addCombo(Composite p_parent, String p_title)
@@ -261,16 +267,22 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 		return combo;
 	}
 
-	protected Button addCheckbox(Composite p_parent, String p_title)
+	protected Button addCheckbox(Composite p_parent, String p_title, boolean p_checked)
 	{
 		new Label(p_parent, SWT.NULL);
 
 		Button checkbox = new Button(p_parent, SWT.CHECK);
 		checkbox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		checkbox.setText(p_title);
+		checkbox.setSelection(p_checked);
 
 		new Label(p_parent, SWT.NULL);
 		return checkbox;
+	}
+	
+	protected Button addCheckbox(Composite p_parent, String p_title)
+	{
+		return addCheckbox(p_parent, p_title, false);
 	}
 
 	//
