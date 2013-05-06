@@ -230,20 +230,6 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 			return false;
 		}
 		
-		if (validateClassName())
-		{
-			Path filePath = getGenOptions().getJavaScriptPath();
-			IFile file = getProject().getFile(filePath);
-			if (!file.getParent().exists())
-			{
-				setMessage("A new folder '" + file.getParent().getProjectRelativePath() + "' will be created.", INFORMATION);
-			}
-			else if (getMessage() != null && getMessage().startsWith("A new folder '"))
-			{
-				setMessage("");
-			}
-		}
-		
 		return true;
 	}
 
