@@ -155,7 +155,7 @@ public class MXProjectPropertyPage extends PropertyPage
 		{
 			if (_enableMXFrameworkCheckbox.getSelection())
 			{
-				if (_scriptPathText.getText() == null || _scriptPathText.equals(""))
+				if (_scriptPathText.getText().equals(""))
 				{
 					MessageBox msgBox = new MessageBox(getShell(), SWT.ERROR);
 					msgBox.setText(Activator.PLUGIN_TITLE);
