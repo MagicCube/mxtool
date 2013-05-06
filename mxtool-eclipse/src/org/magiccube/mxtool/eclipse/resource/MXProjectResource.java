@@ -15,7 +15,7 @@ import org.magiccube.mxtool.eclipse.properties.MXProjectProperties;
 public class MXProjectResource
 {
 	private IProject _project = null;
-	
+
 	public MXProjectResource(IProject p_project)
 	{
 		_project = p_project;
@@ -25,17 +25,19 @@ public class MXProjectResource
 		}
 		catch (CoreException e)
 		{
-			
+
 		}
 	}
-	
+
 	private MXProjectProperties _properties = null;
+
 	public MXProjectProperties getProjectProperties()
 	{
 		return _properties;
 	}
-	
+
 	private Path _scriptPath = null;
+
 	public Path getScriptPath()
 	{
 		if (_scriptPath == null && _properties.getScriptPath() != null)
@@ -44,8 +46,9 @@ public class MXProjectResource
 		}
 		return _scriptPath;
 	}
-	
+
 	private IFolder _scriptFolder = null;
+
 	public IFolder getScriptFolder()
 	{
 		if (_scriptFolder == null)
@@ -54,7 +57,7 @@ public class MXProjectResource
 		}
 		return _scriptFolder;
 	}
-	
+
 	public String[] getNamespaces() throws CoreException
 	{
 		List<String> result = new ArrayList<String>();
@@ -70,18 +73,18 @@ public class MXProjectResource
 			}
 			result.add(ns);
 		}
-		
+
 		String[] array = new String[result.size()];
 		array = result.toArray(array);
 		return array;
 	}
-	
+
 	public String[] getClassNames() throws CoreException
 	{
 		List<String> result = new ArrayList<String>();
 		result.add("MXObject");
 		result.add("MXComponent");
-		
+
 		IFolder rootFolder = getScriptFolder();
 		List<IFile> jsFiles = _getJavaScripts(rootFolder);
 		for (IFile jsFile : jsFiles)
@@ -93,13 +96,13 @@ public class MXProjectResource
 			{
 				continue;
 			}
-			if (className.equals("mx.MXObject") || className.equals("mx.MXComponent"))
+			if (className.equals("mx.MXObject") || className.equals("mx.MXComponent") || className.equals("mx.MXEvent"))
 			{
 				continue;
 			}
 			result.add(className);
 		}
-		
+
 		String[] array = new String[result.size()];
 		array = result.toArray(array);
 		return array;
@@ -111,18 +114,29 @@ public class MXProjectResource
 		IResource[] members = p_parentFolder.members();
 		for (IResource member : members)
 		{
-			if (member instanceof IFile && member.getFileExtension().equals("js"))
+			try
 			{
-				IFile file = (IFile)member;
-				if (file.getName().matches("^[A-Z][a-zA-Z0-9]+\\.js$"))
+				if (member instanceof IFile && member.getFileExtension().equals("js"))
 				{
-					result.add(file);
+					IFile file = (IFile) member;
+					if (file.getName().matches("^[A-Z][a-zA-Z0-9]+\\.js$"))
+					{
+						result.add(file);
+					}
+				}
+				else if (member instanceof IFolder)
+				{
+					if (member.getName().startsWith("."))
+					{
+						continue;
+					}
+					List<IFile> files = _getJavaScripts((IFolder) member);
+					result.addAll(files);
 				}
 			}
-			else if (member instanceof IFolder)
+			catch (Exception e)
 			{
-				List<IFile> files = _getJavaScripts((IFolder)member);
-				result.addAll(files);
+				e.printStackTrace();
 			}
 		}
 		return result;
@@ -136,9 +150,24 @@ public class MXProjectResource
 		{
 			if (member instanceof IFolder)
 			{
-				IFolder folder = (IFolder)member;
-				result.add(folder);
-				result.addAll(_getSubfolders(folder));
+				try
+				{
+					if (member.getName().equals("res"))
+					{
+						continue;
+					}
+					if (member.getName().startsWith("."))
+					{
+						continue;
+					}
+					IFolder folder = (IFolder) member;
+					result.add(folder);
+					result.addAll(_getSubfolders(folder));
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 		return result;
