@@ -1,33 +1,32 @@
 package org.magiccube.mxtool.eclipse.wizards;
 
+import org.magiccube.mxtool.code.gen.MXAppClassGenerator;
 import org.magiccube.mxtool.code.gen.MXClassGenOptions;
-import org.magiccube.mxtool.code.gen.MXClassGenerator;
-import org.magiccube.mxtool.code.gen.MXViewClassGenerator;
+import org.magiccube.mxtool.eclipse.wizards.pages.NewMXAppClassWizardPage;
 import org.magiccube.mxtool.eclipse.wizards.pages.NewMXClassWizardPage;
-import org.magiccube.mxtool.eclipse.wizards.pages.NewMXViewClassWizardPage;
 
 public class NewMXAppClassWizard extends NewMXClassWizard
 {
 	public NewMXAppClassWizard()
 	{
-		super(new MXClassGenOptions("MXView"));
+		super(new MXClassGenOptions("MXApp"));
 	}
 	
 	
-	private NewMXViewClassWizardPage _basicPage = null;
+	private NewMXAppClassWizardPage _basicPage = null;
 	@Override
 	protected NewMXClassWizardPage getBasicPage()
 	{
 		if (_basicPage == null)
 		{
-			_basicPage = new NewMXViewClassWizardPage();
+			_basicPage = new NewMXAppClassWizardPage();
 		}
 		return _basicPage;
 	}
 	
-	private MXViewClassGenerator _classGenerator = new MXViewClassGenerator();
+	private MXAppClassGenerator _classGenerator = new MXAppClassGenerator();
 	@Override
-	protected MXClassGenerator getClassGenerator()
+	protected MXAppClassGenerator getClassGenerator()
 	{
 		return _classGenerator;
 	}

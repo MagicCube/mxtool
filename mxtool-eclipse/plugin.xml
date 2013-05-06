@@ -129,7 +129,7 @@
             name="New MX Application"
             icon="icons/sample.gif"
             category="org.magiccube.mxtool.eclipse"
-            class="org.magiccube.mxtool.eclipse.wizards.NewMXAppWizard"
+            class="org.magiccube.mxtool.eclipse.wizards.NewMXAppClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXAppClassWizard"/>
    </extension>
 

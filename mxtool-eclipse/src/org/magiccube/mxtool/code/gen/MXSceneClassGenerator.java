@@ -13,12 +13,12 @@ public class MXSceneClassGenerator extends MXClassGenerator
 	protected void writeVarMe(StringBuilder builder, MXClassGenOptions p_options)
 	{
 		super.writeVarMe(builder, p_options);
+		if (p_options.properties.get("sceneTitle") != null)
+		{
+			builder.append("    me.title = \"" + p_options.properties.get("sceneTitle") + "\";\r\n");
+		}
 		if (p_options.genCss)
 		{
-			if (p_options.properties.get("sceneTitle") != null)
-			{
-				builder.append("    me.title = \"" + p_options.properties.get("sceneTitle") + "\";\r\n");
-			}
 			builder.append("    me.autoFillParent = " + p_options.properties.get("autoFillParent") + ";\r\n");
 		}
 	}
