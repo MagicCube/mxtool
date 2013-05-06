@@ -2,11 +2,6 @@ package org.magiccube.mxtool.code.gen;
 
 public class MXClassGenerator
 {
-	public MXClassGenerator()
-	{
-		
-	}
-	
 	public StringBuilder generateCode(MXClassGenOptions p_options)
 	{
 		StringBuilder builder = new StringBuilder();

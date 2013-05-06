@@ -82,6 +82,17 @@ public class MXClassGenOptions
 	
 	public Path getCssPath()
 	{
-		return null;
+		String ns = null;
+		int pos = namespace.indexOf(".");
+		if (pos == -1)
+		{
+			ns = namespace + ".res.";
+		}
+		else
+		{
+			ns = namespace.substring(0, pos) + ".res.";
+		}
+		String path = scriptPath + "/" + ns.replaceAll("\\.", "\\/") + className + ".css";
+		return new Path(path);
 	}
 }

@@ -3,6 +3,7 @@ package org.magiccube.mxtool.eclipse.wizards;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFile;
@@ -24,6 +25,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.magiccube.mxtool.code.gen.CssGenerator;
 import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 import org.magiccube.mxtool.code.gen.MXClassGenerator;
 import org.magiccube.mxtool.eclipse.properties.MXProjectProperties;
@@ -73,8 +75,6 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 		
 		
 		_genOptions.scriptPath = _projectProperties.getScriptPath();
-		
-		
 		IFolder scriptFolder = _project.getFolder(_projectProperties.getScriptPath());
 		if (scriptFolder == null)
 		{
@@ -149,7 +149,7 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 			{
 				try
 				{
-					_doFinish(_genOptions, monitor);
+					doFinish(monitor);
 				}
 				catch (CoreException e)
 				{
@@ -183,33 +183,67 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 	
 	
 	
-	private void _doFinish(MXClassGenOptions p_options, IProgressMonitor p_monitor) throws CoreException
+	protected void doFinish(IProgressMonitor p_monitor) throws CoreException
 	{
-		// create a sample file
-		p_monitor.beginTask("Creating " + p_options.getFullClassName(), 2);
-		final IFile file = getProject().getFile(p_options.getJavaScriptPath());
+		IFile javaScriptFile = genJavaScriptFile(p_monitor);
+		if (getGenOptions().genCss)
+		{
+			IFile cssFile = genCssFile(p_monitor);
+			openFile(cssFile, p_monitor);
+		}
+		openFile(javaScriptFile, p_monitor);
+	}
+
+	protected IFile genJavaScriptFile(IProgressMonitor p_monitor) throws CoreException
+	{
+		String js = getClassGenerator().generateCode(getGenOptions()).toString();
+		
+		IFile file = getProject().getFile(getGenOptions().getJavaScriptPath());
 		if (file.exists())
 		{
 			_throwCoreException(file.getFullPath() + " already exists.");
 		}
-		
 		IFolder folder = (IFolder)file.getParent();
 		ResourceHelper.prepareFolder(folder, p_monitor);
-		
 		try
 		{
-			InputStream stream = _openContentStream();
+			InputStream stream = openContentStream(js);
 			file.create(stream, true, p_monitor);
 			stream.close();
 		}
 		catch (IOException e)
 		{
+			
 		}
+		return file;
+	}
+	
+	protected IFile genCssFile(IProgressMonitor p_monitor) throws CoreException
+	{
+		String css = new CssGenerator().generateCode(getGenOptions()).toString();
 		
-		
-		
-		p_monitor.worked(1);
-		p_monitor.setTaskName("Opening file for editing...");
+		IFile file = getProject().getFile(getGenOptions().getCssPath());
+		if (file.exists())
+		{
+			_throwCoreException(file.getFullPath() + " already exists.");
+		}
+		IFolder folder = (IFolder)file.getParent();
+		ResourceHelper.prepareFolder(folder, p_monitor);
+		try
+		{
+			InputStream stream = openContentStream(css);
+			file.create(stream, true, p_monitor);
+			stream.close();
+		}
+		catch (IOException e)
+		{
+			
+		}
+		return file;
+	}
+
+	protected void openFile(final IFile p_file, IProgressMonitor p_monitor)
+	{
 		getShell().getDisplay().asyncExec(new Runnable()
 		{
 			public void run()
@@ -217,20 +251,26 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				try
 				{
-					IDE.openEditor(page, file, true);
+					IDE.openEditor(page, p_file, true);
 				}
 				catch (PartInitException e)
 				{
 				}
 			}
 		});
-		p_monitor.worked(1);
 	}
 
-	private InputStream _openContentStream()
+	protected InputStream openContentStream(String contents)
 	{
-		String contents = getClassGenerator().generateCode(_genOptions).toString();
-		return new ByteArrayInputStream(contents.getBytes());
+		try
+		{
+			return new ByteArrayInputStream(contents.getBytes("UTF-8"));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private void _throwCoreException(String message) throws CoreException
