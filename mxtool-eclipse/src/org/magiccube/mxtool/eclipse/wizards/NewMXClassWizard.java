@@ -121,6 +121,7 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 	
 	protected abstract MXClassGenerator getClassGenerator();
 	protected abstract MXHtmlGenerator getHtmlGenerator();
+	protected abstract CssGenerator getCssGenerator();
 	
 	private NewMXClassWizardPage _basicPage = null;
 	protected NewMXClassWizardPage getBasicPage()
@@ -250,7 +251,7 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 	
 	protected IFile genCssFile(IProgressMonitor p_monitor) throws CoreException
 	{
-		String css = new CssGenerator().generateCode(getGenOptions()).toString();
+		String css = getCssGenerator().generateCode(getGenOptions()).toString();
 		
 		IFile file = getProject().getFile(getGenOptions().getCssPath());
 		if (file.exists())

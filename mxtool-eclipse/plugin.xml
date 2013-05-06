@@ -105,7 +105,7 @@
             name="New MXObject Subclass"
             icon="icons/mx.png"
             category="org.magiccube.mxtool.eclipse"
-            class="org.magiccube.mxtool.eclipse.wizards.NewMXClassWizard"
+            class="org.magiccube.mxtool.eclipse.wizards.NewMXObjectClassWizard"
             id="org.magiccube.mxtool.eclipse.wizards.newMXObjectClassWizard"/>
       <wizard
             name="New MXComponent Subclass"

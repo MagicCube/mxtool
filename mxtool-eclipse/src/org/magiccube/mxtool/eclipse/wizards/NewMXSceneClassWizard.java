@@ -1,5 +1,6 @@
 package org.magiccube.mxtool.eclipse.wizards;
 
+import org.magiccube.mxtool.code.gen.CssGenerator;
 import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 import org.magiccube.mxtool.code.gen.MXClassGenerator;
 import org.magiccube.mxtool.code.gen.MXHtmlGenerator;
@@ -39,5 +40,13 @@ public class NewMXSceneClassWizard extends NewMXClassWizard
 	protected MXHtmlGenerator getHtmlGenerator()
 	{
 		return _htmlGenerator;
+	}
+	
+
+	private CssGenerator _cssGenerator = new CssGenerator();
+	@Override
+	protected CssGenerator getCssGenerator()
+	{
+		return _cssGenerator;
 	}
 }

@@ -10,6 +10,7 @@ public class NewMXSceneClassWizardPage extends NewMXClassWizardPage
 	protected Button autoFillParentCheckbox = null;
 	protected Button overrideActivateCheckbox = null;
 	protected Button genHtmlCheckbox = null;
+	protected Button genCssCheckbox = null;
 	
 	@Override
 	protected void addSubcontrols(Composite p_container)
@@ -18,6 +19,7 @@ public class NewMXSceneClassWizardPage extends NewMXClassWizardPage
 		autoFillParentCheckbox = addCheckbox(p_container, "Auto fill parent", true);
 		overrideActivateCheckbox = addCheckbox(p_container, "Override 'activate' method", true);
 		genHtmlCheckbox = addCheckbox(p_container, "Generate debug web page", false);
+		genCssCheckbox = addCheckbox(p_container, "Generate CSS", false);
 	}
 
 	public boolean validate()
@@ -26,6 +28,7 @@ public class NewMXSceneClassWizardPage extends NewMXClassWizardPage
 		if (!result) return false;
 
 		getGenOptions().genHtml = genHtmlCheckbox.getSelection();
+		getGenOptions().genCss = genCssCheckbox.getSelection();
 		getGenOptions().properties.put("sceneTitle", sceneTitleText.getText());
 		getGenOptions().properties.put("autoFillParent", autoFillParentCheckbox.getSelection());
 		getGenOptions().properties.put("overrideActivate", overrideActivateCheckbox.getSelection());

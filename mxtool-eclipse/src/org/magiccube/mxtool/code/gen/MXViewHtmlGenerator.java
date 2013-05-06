@@ -4,12 +4,6 @@ public class MXViewHtmlGenerator extends MXHtmlGenerator
 {
 
 	@Override
-	public String getTitle(MXClassGenOptions p_options)
-	{
-		return p_options.properties.get("appDisplayName").toString();
-	}
-
-	@Override
 	protected void writeMXWhenReadyScriptCode(StringBuilder builder, MXClassGenOptions p_options)
 	{
 		super.writeMXWhenReadyScriptCode(builder, p_options);

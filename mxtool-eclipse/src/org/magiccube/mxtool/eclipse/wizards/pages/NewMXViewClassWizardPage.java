@@ -5,8 +5,8 @@ import org.eclipse.swt.widgets.Composite;
 
 public class NewMXViewClassWizardPage extends NewMXClassWizardPage
 {
-	protected Button genCssCheckbox = null;
 	protected Button genHtmlCheckbox = null;
+	protected Button genCssCheckbox = null;
 	
 	@Override
 	protected void addSubcontrols(Composite p_container)
