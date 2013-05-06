@@ -46,13 +46,12 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 		_options = p_options;
 		setNeedsProgressMonitor(true);
 	}
-	
+
 	public void init(IWorkbench workbench, IStructuredSelection p_selection)
 	{
 		this._selection = p_selection;
 		_basicPage.init(_options, p_selection);
 	}
-
 
 	public void addPages()
 	{
@@ -65,8 +64,7 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 		final String fileName = null;
 		IRunnableWithProgress op = new IRunnableWithProgress()
 		{
-			public void run(IProgressMonitor monitor)
-					throws InvocationTargetException
+			public void run(IProgressMonitor monitor) throws InvocationTargetException
 			{
 				try
 				{
@@ -93,16 +91,13 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 		catch (InvocationTargetException e)
 		{
 			Throwable realException = e.getTargetException();
-			MessageDialog.openError(getShell(), "Error",
-					realException.getMessage());
+			MessageDialog.openError(getShell(), "Error", realException.getMessage());
 			return false;
 		}
 		return true;
 	}
 
-
-	private void doFinish(String containerName, String fileName,
-			IProgressMonitor monitor) throws CoreException
+	private void doFinish(String containerName, String fileName, IProgressMonitor monitor) throws CoreException
 	{
 		// create a sample file
 		monitor.beginTask("Creating " + fileName, 2);
@@ -110,8 +105,7 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 		IResource resource = root.findMember(new Path(containerName));
 		if (!resource.exists() || !(resource instanceof IContainer))
 		{
-			throwCoreException("Container \"" + containerName
-					+ "\" does not exist.");
+			throwCoreException("Container \"" + containerName + "\" does not exist.");
 		}
 		IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName));
@@ -137,8 +131,7 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 		{
 			public void run()
 			{
-				IWorkbenchPage page = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getActivePage();
+				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				try
 				{
 					IDE.openEditor(page, file, true);
@@ -148,7 +141,8 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 				}
 			}
 		});
-		monitor.worked(1);	}
+		monitor.worked(1);
+	}
 
 	private InputStream openContentStream()
 	{
@@ -158,8 +152,7 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 
 	private void throwCoreException(String message) throws CoreException
 	{
-		IStatus status = new Status(IStatus.ERROR,
-				"org.magiccube.mxtool.eclipse", IStatus.OK, message, null);
+		IStatus status = new Status(IStatus.ERROR, "org.magiccube.mxtool.eclipse", IStatus.OK, message, null);
 		throw new CoreException(status);
 	}
 }

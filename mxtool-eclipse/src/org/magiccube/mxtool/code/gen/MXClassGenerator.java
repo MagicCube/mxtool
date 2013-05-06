@@ -30,8 +30,15 @@ public class MXClassGenerator
 		writeBody(builder);
 		writeLine(builder);
 		writeEndOfClass(builder, p_options);
+		if (p_options.isSingleton)
+		{
+			writeLine(builder);
+			writeSingleton(builder, p_options);
+		}
 		return builder;
 	}
+
+	
 
 	
 
@@ -58,7 +65,12 @@ public class MXClassGenerator
 	
 	protected void writeBeginOfClass(StringBuilder builder, MXClassGenOptions p_options)
 	{
-		builder.append(p_options.namespace).append(".").append(p_options.className).append(" = function()\r\n");
+		builder.append(p_options.namespace).append(".").append(p_options.className);
+		if (p_options.isSingleton)
+		{
+			builder.append("Class");
+		}
+		builder.append(" = function()\r\n");
 		builder.append("{\r\n");
 	}
 
@@ -118,5 +130,10 @@ public class MXClassGenerator
 	protected void writeBody(StringBuilder builder)
 	{
 	
+	}
+	
+	protected void writeSingleton(StringBuilder builder, MXClassGenOptions p_options)
+	{
+		builder.append(p_options.namespace).append(".").append(p_options.className).append(" = new ").append(p_options.namespace).append(".").append(p_options.className).append("Class();\r\n");
 	}
 }

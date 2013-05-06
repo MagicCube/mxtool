@@ -1,14 +1,17 @@
 package org.magiccube.mxtool.eclipse.wizards;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -20,7 +23,7 @@ import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 import org.magiccube.mxtool.eclipse.properties.MXProjectProperties;
 
 
-public class NewMXClassWizardPage extends WizardPage
+public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 {
 	private MXClassGenOptions _options = null;
 	protected Combo namespaceCombo = null;
@@ -81,6 +84,8 @@ public class NewMXClassWizardPage extends WizardPage
 	}
 	
 	
+	
+	
 	private IStructuredSelection _selection;
 	protected IStructuredSelection getSelection()
 	{
@@ -110,7 +115,7 @@ public class NewMXClassWizardPage extends WizardPage
 		gridLayout.verticalSpacing = 9;
 		container.setLayout(gridLayout);
 		
-		namespaceCombo = _appendCombo(container, "Namespace:");
+		namespaceCombo = _appendCombo(container, "Namespace:");		
 		classNameText = _appendText(container, "Class name:");
 		singletonCheckbox = _appendCheckbox(container, "Singleton class");
 		superClassCombo = _appendCombo(container, "Super class:");
@@ -120,7 +125,16 @@ public class NewMXClassWizardPage extends WizardPage
 		applyOptions(_options);
 	}
 
-
+	
+	
+	@Override
+	public boolean canFlipToNextPage()
+	{
+		boolean result = super.canFlipToNextPage();
+		if (!result) return false;
+		
+		return validate();
+	}
 
 
 
@@ -142,6 +156,89 @@ public class NewMXClassWizardPage extends WizardPage
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	protected boolean validate()
+	{
+		if (!validateNamespace())
+		{
+			return false;
+		}
+		if (!validateClassName())
+		{
+			return false;
+		}
+		if (!validateSuperClass())
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	
+	
+	
+	
+
+	
+	protected Pattern namespacePattern = Pattern.compile("^[a-z][a-z0-9\\.]*[a-z0-9]$");
+	protected boolean validateNamespace()
+	{
+		if (namespaceCombo.getText().equals(""))
+		{
+			setErrorMessage("Namespace can not be empty.");
+			return false;
+		}
+		
+		
+		if (!namespacePattern.matcher(namespaceCombo.getText()).matches())
+		{
+			setErrorMessage("Namespace is not validated.");
+			return false;
+		}
+		_options.namespace = namespaceCombo.getText();
+		return true;
+	}
+	
+	protected Pattern classNamePattern = Pattern.compile("^[A-Z][a-zA-Z0-9]+$");
+	protected boolean validateClassName()
+	{
+		if (classNameText.getText().equals(""))
+		{
+			setErrorMessage("Class name can not be empty.");
+			return false;
+		}
+		
+		if (!classNamePattern.matcher(classNameText.getText()).matches())
+		{
+			setErrorMessage("Class name is not validated.");
+			return false;
+		}
+		_options.className = classNameText.getText();
+		return true;
+	}
+	
+	protected boolean validateSuperClass()
+	{
+		if (superClassCombo.getText().equals(""))
+		{
+			setErrorMessage("Super class can not be empty.");
+			return false;
+		}
+		_options.superClass = superClassCombo.getText();
+		return true;
+	}
+
+	
+	
+	
+	
+	
 	private Text _appendText(Composite p_parent, String p_title)
 	{
 		Label label = new Label(p_parent, SWT.NULL);
@@ -149,10 +246,14 @@ public class NewMXClassWizardPage extends WizardPage
 		
 		Text text = new Text(p_parent, SWT.BORDER | SWT.SINGLE);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		text.addModifyListener(this);
 		
 		new Label(p_parent, SWT.NULL);
 		return text;
 	}
+	
+	
+
 	
 	private Combo _appendCombo(Composite p_parent, String p_title)
 	{
@@ -161,6 +262,7 @@ public class NewMXClassWizardPage extends WizardPage
 		
 		Combo combo = new Combo(p_parent, SWT.BORDER | SWT.SINGLE);
 		combo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		combo.addModifyListener(this);
 		
 		new Label(p_parent, SWT.NULL);
 		return combo;
@@ -173,8 +275,43 @@ public class NewMXClassWizardPage extends WizardPage
 		Button checkbox = new Button(p_parent, SWT.CHECK);
 		checkbox.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		checkbox.setText(p_title);
-		
+	
 		new Label(p_parent, SWT.NULL);
 		return checkbox;
 	}
+
+	
+	
+	
+	
+
+	//
+	// Listeners
+	//
+	@Override
+	public void modifyText(ModifyEvent e)
+	{
+		if (e.getSource() == namespaceCombo)
+		{
+			if (validateNamespace())
+			{
+				setErrorMessage(null);
+			}
+		}
+		else if (e.getSource() == classNameText)
+		{
+			if (validateClassName())
+			{
+				setErrorMessage(null);
+			}
+		}
+		else if (e.getSource() == superClassCombo)
+		{
+			if (validateSuperClass())
+			{
+				setErrorMessage(null);
+			}
+		}
+	}
+	
 }
