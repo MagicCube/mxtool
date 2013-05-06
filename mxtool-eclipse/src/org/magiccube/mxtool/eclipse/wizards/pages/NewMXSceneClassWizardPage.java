@@ -15,7 +15,7 @@ public class NewMXSceneClassWizardPage extends NewMXClassWizardPage
 	@Override
 	protected void addSubcontrols(Composite p_container)
 	{
-		sceneTitleText = addText(p_container, "Scene title:", "New MX Scene");
+		sceneTitleText = addText(p_container, "Title:", "New MX Scene");
 		autoFillParentCheckbox = addCheckbox(p_container, "Auto fill parent", true);
 		overrideActivateCheckbox = addCheckbox(p_container, "Override 'activate' method", true);
 		genHtmlCheckbox = addCheckbox(p_container, "Generate debug web page", false);

@@ -2,7 +2,6 @@ package org.magiccube.mxtool.eclipse.resource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -115,8 +114,6 @@ public class MXProjectResource
 			if (member instanceof IFile && member.getFileExtension().equals("js"))
 			{
 				IFile file = (IFile)member;
-				String name = file.getName();
-				System.out.println(name);
 				if (file.getName().matches("^[A-Z][a-zA-Z0-9]+\\.js$"))
 				{
 					result.add(file);

@@ -14,6 +14,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -121,11 +122,29 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 		classNameText = addText(container, "Class name:");
 		singletonCheckbox = addCheckbox(container, "Singleton class");
 		superClassCombo = addCombo(container, "Super class:", classNames);
-		addSubcontrols(container);
+		
+		
+		if (!getGenOptions().superClassType.equals("MXObject") && !getGenOptions().superClassType.equals("MXComponent"))
+		{
+			addLine(container);
+			addHeadline(container, getGenOptions().superClassType);
+			
+			addSubcontrols(container);
+		}
 
 		setControl(container);
 
 		applyOptions(_genOptions);
+	}
+
+	private void addHeadline(Composite container, String p_title)
+	{
+		Label caption = new Label(container, SWT.NULL);
+		caption.setText(p_title);
+		caption.setFont(new Font(getShell().getDisplay(), getDialogFontName(), 12, java.awt.Font.BOLD));
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = 3;
+		caption.setLayoutData(gridData);
 	}
 
 	protected void addSubcontrols(Composite p_container)
@@ -361,6 +380,16 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 	{
 		return addCheckbox(p_parent, p_title, false);
 	}
+	
+	protected void addLine(Composite container)
+	{
+		Label line = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = 3;
+		line.setLayoutData(gridData);
+	}
+
+
 
 	//
 	// Listeners

@@ -13,9 +13,9 @@ public class NewMXAppClassWizardPage extends NewMXClassWizardPage
 	@Override
 	protected void addSubcontrols(Composite p_container)
 	{
-		appDisplayNameText = addText(p_container, "Application display name:", "New MX Application");
-		genHtmlCheckbox = addCheckbox(p_container, "Generate web page", true);
+		appDisplayNameText = addText(p_container, "Display name:", "New MX Application");
 		genCssCheckbox = addCheckbox(p_container, "Generate CSS", true);
+		genHtmlCheckbox = addCheckbox(p_container, "Generate debug web page", true);
 	}
 
 	public boolean validate()
