@@ -3,11 +3,11 @@ package org.magiccube.mxtool.eclipse.wizards;
 import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 import org.magiccube.mxtool.code.gen.MXClassGenerator;
 
-public class NewMXComponentClassWizard extends NewMXClassWizard
+public class NewMXObjectClassWizard extends NewMXClassWizard
 {
-	public NewMXComponentClassWizard()
+	public NewMXObjectClassWizard()
 	{
-		super(new MXClassGenOptions("MXComponent"));
+		super(new MXClassGenOptions("MXObject"));
 	}
 
 	private MXClassGenerator _classGenerator = new MXClassGenerator();

@@ -28,12 +28,10 @@ import org.magiccube.mxtool.code.gen.MXClassGenOptions;
 import org.magiccube.mxtool.code.gen.MXClassGenerator;
 import org.magiccube.mxtool.eclipse.properties.MXProjectProperties;
 import org.magiccube.mxtool.eclipse.utils.ResourceHelper;
+import org.magiccube.mxtool.eclipse.wizards.pages.NewMXClassWizardPage;
 
-public class NewMXClassWizard extends Wizard implements INewWizard
+public abstract class NewMXClassWizard extends Wizard implements INewWizard
 {
-	private MXClassGenOptions _options = null;
-	private NewMXClassWizardPage _basicPage = null;
-
 	public NewMXClassWizard()
 	{
 		this(new MXClassGenOptions());
@@ -42,8 +40,7 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 	public NewMXClassWizard(MXClassGenOptions p_options)
 	{
 		super();
-		_options = p_options;
-		_basicPage = new NewMXClassWizardPage();
+		_genOptions = p_options;
 		setNeedsProgressMonitor(true);
 	}
 
@@ -53,7 +50,7 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 		
 		if (_selection == null || _selection.size() == 0)
 		{
-			_basicPage.setErrorMessage("Please select a project first.");
+			getBasicPage().setErrorMessage("Please select a project first.");
 			return;
 		}
 		
@@ -70,18 +67,18 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 
 		if (_projectProperties == null || !_projectProperties.isEnabled())
 		{
-			_basicPage.setErrorMessage("MXFramework of the current project haven't been enabled yet. You can enable it in the 'MXFramework' page of Project Properties.");
+			getBasicPage().setErrorMessage("MXFramework of the current project haven't been enabled yet. You can enable it in the 'MXFramework' page of Project Properties.");
 			return;
 		}
 		
 		
-		_options.scriptPath = _projectProperties.getScriptPath();
+		_genOptions.scriptPath = _projectProperties.getScriptPath();
 		
 		
 		IFolder scriptFolder = _project.getFolder(_projectProperties.getScriptPath());
 		if (scriptFolder == null)
 		{
-			_basicPage.setErrorMessage("The script path '" + _projectProperties.getScriptPath() + "' is not currently available. You can modify it in the 'MXFramework' page of Project Properties.");
+			getBasicPage().setErrorMessage("The script path '" + _projectProperties.getScriptPath() + "' is not currently available. You can modify it in the 'MXFramework' page of Project Properties.");
 			return;
 		}
 		
@@ -89,10 +86,10 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 		{
 			IPath relPath = resource.getFullPath().makeRelativeTo(scriptFolder.getFullPath());
 			String ns = relPath.toString().replaceAll("\\/", ".");
-			_options.namespace = ns;
+			_genOptions.namespace = ns;
 		}
 		
-		_basicPage.init(_options);
+		getBasicPage().init(_genOptions);
 	}
 	
 	
@@ -104,37 +101,44 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 	}
 	
 	private IProject _project = null;
-	protected IProject getProject()
+	public IProject getProject()
 	{
 		return _project;
 	}
 	
 	private MXProjectProperties _projectProperties = null;
-	protected MXProjectProperties getProjectProperties()
+	public MXProjectProperties getProjectProperties()
 	{
 		return _projectProperties;
 	}
 	
-	
-	private MXClassGenerator _classGenerator = null;
-	public MXClassGenerator getClassGenerator()
+	private MXClassGenOptions _genOptions = null;
+	public MXClassGenOptions getGenOptions()
 	{
-		if (_classGenerator == null)
+		return _genOptions;
+	}
+	
+	protected abstract MXClassGenerator getClassGenerator();
+	
+	private NewMXClassWizardPage _basicPage = null;
+	protected NewMXClassWizardPage getBasicPage()
+	{
+		if (_basicPage == null)
 		{
-			_classGenerator = new MXClassGenerator();
+			_basicPage = new NewMXClassWizardPage();
 		}
-		return _classGenerator;
+		return _basicPage;
 	}
 	
 
 	public void addPages()
 	{
-		addPage(_basicPage);
+		addPage(getBasicPage());
 	}
 
 	public boolean performFinish()
 	{
-		if (!_basicPage.validate())
+		if (!getBasicPage().validate())
 		{
 			return false;
 		}
@@ -145,7 +149,7 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 			{
 				try
 				{
-					_doFinish(_options, monitor);
+					_doFinish(_genOptions, monitor);
 				}
 				catch (CoreException e)
 				{
@@ -183,7 +187,7 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 	{
 		// create a sample file
 		p_monitor.beginTask("Creating " + p_options.getFullClassName(), 2);
-		final IFile file = getProject().getFile(p_options.getAbsolutePath());
+		final IFile file = getProject().getFile(p_options.getJavaScriptPath());
 		if (file.exists())
 		{
 			_throwCoreException(file.getFullPath() + " already exists.");
@@ -225,7 +229,7 @@ public class NewMXClassWizard extends Wizard implements INewWizard
 
 	private InputStream _openContentStream()
 	{
-		String contents = getClassGenerator().generateCode(_options).toString();
+		String contents = getClassGenerator().generateCode(_genOptions).toString();
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 

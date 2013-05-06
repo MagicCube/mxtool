@@ -14,6 +14,8 @@ public class MXClassGenOptions
 	public boolean isSingleton = false;
 	public String superClass = null;
 	public String superClassType = "MXObject";
+	public boolean genCss = false;
+	public boolean genHtml = false;
 	public List<String> importedClasses = new ArrayList<String>();
 	
 	public MXClassGenOptions()
@@ -68,11 +70,15 @@ public class MXClassGenOptions
 	}
 	
 	
-	public Path getAbsolutePath()
+	public Path getJavaScriptPath()
 	{
 		String path = scriptPath + "/" + namespace.replaceAll("\\.", "\\/") + "/";
 		path += className + ".js";
 		return new Path(path);
 	}
 	
+	public Path getCssPath()
+	{
+		return null;
+	}
 }

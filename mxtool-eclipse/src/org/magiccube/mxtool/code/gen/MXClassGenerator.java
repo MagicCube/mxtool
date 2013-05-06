@@ -59,6 +59,7 @@ public class MXClassGenerator
 		if (!p_options.importedClasses.contains(p_options.superClass))
 		{
 			builder.append("$import(\"").append(p_options.superClass).append("\");\r\n");
+			writeLine(builder);
 		}
 	}
 	
