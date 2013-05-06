@@ -238,6 +238,10 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 			{
 				setMessage("A new folder '" + file.getParent().getProjectRelativePath() + "' will be created.", INFORMATION);
 			}
+			else if (getMessage() != null && getMessage().startsWith("A new folder '"))
+			{
+				setMessage("");
+			}
 		}
 		
 		return true;
