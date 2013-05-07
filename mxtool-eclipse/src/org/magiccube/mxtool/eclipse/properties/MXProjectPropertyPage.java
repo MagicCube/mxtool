@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -23,6 +24,8 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.magiccube.mxtool.eclipse.Activator;
 import org.magiccube.mxtool.eclipse.builders.MXNature;
+import org.magiccube.mxtool.eclipse.jobs.DownloadJQueryJob;
+import org.magiccube.mxtool.eclipse.jobs.DownloadMXFrameworkJob;
 
 public class MXProjectPropertyPage extends PropertyPage
 {
@@ -74,7 +77,7 @@ public class MXProjectPropertyPage extends PropertyPage
 				IProject project = getProject();
 				IResource member = project.findMember("scripts", true);
 				IContainer container = member instanceof IContainer ? (IFolder) member : project;
-				
+
 				ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), container, false, "Select the Script path");
 				if (dialog.open() == ContainerSelectionDialog.OK)
 				{
@@ -87,16 +90,34 @@ public class MXProjectPropertyPage extends PropertyPage
 						{
 							path = (Path) path.makeRelativeTo(project.getFullPath());
 							IFolder folder = (IFolder) project.findMember(path);
-							if (folder.getFolder("mx").exists())
+							IFolder jqueryFolder = folder.getFolder("lib/jquery");
+							if (!jqueryFolder.exists() || !jqueryFolder.getFile("jquery.js").exists())
 							{
-								_scriptPathText.setText(path.toString());
+								MessageBox msgBox = new MessageBox(getShell(), SWT.YES | SWT.NO);
+								msgBox.setText(Activator.PLUGIN_TITLE);
+								msgBox.setMessage("JQuery is not found in the script path. Do you want to download it?");
+								if (msgBox.open() == SWT.YES)
+								{
+									_downloadJQuery(jqueryFolder);
+									return;
+								}
+							}
+							
+							IFolder mxFolder = folder.getFolder("mx");
+							if (!mxFolder.exists() || !mxFolder.getFile("framework-core.js").exists())
+							{
+								MessageBox msgBox = new MessageBox(getShell(), SWT.YES | SWT.NO);
+								msgBox.setText(Activator.PLUGIN_TITLE);
+								msgBox.setMessage("MXFramework is not found in the script path. Do you want to download it?");
+								if (msgBox.open() == SWT.YES)
+								{
+									_downloadMXFramework(mxFolder);
+									_scriptPathText.setText(path.toString());
+								}
 							}
 							else
 							{
-								MessageBox msgBox = new MessageBox(getShell(), SWT.OK);
-								msgBox.setText(Activator.PLUGIN_TITLE);
-								msgBox.setMessage("Please ensure the script folder containing a subfolder named 'mx'.");
-								msgBox.open();
+								_scriptPathText.setText(path.toString());
 							}
 						}
 						else
@@ -232,5 +253,31 @@ public class MXProjectPropertyPage extends PropertyPage
 	{
 		_enableMXFrameworkCheckbox.setSelection(p_enabled);
 		_scriptPathBrowseButton.setEnabled(p_enabled);
+	}
+
+	private void _downloadJQuery(final IFolder p_jqueryFolder)
+	{
+		ProgressMonitorDialog progress = new ProgressMonitorDialog(getShell());
+		try
+		{
+			progress.run(true, false, new DownloadJQueryJob(p_jqueryFolder));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void _downloadMXFramework(IFolder p_mxFolder)
+	{
+		ProgressMonitorDialog progress = new ProgressMonitorDialog(getShell());
+		try
+		{
+			progress.run(true, false, new DownloadMXFrameworkJob(p_mxFolder));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

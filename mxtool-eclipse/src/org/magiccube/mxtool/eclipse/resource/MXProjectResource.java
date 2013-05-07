@@ -126,7 +126,7 @@ public class MXProjectResource
 				}
 				else if (member instanceof IFolder)
 				{
-					if (member.getName().startsWith("."))
+					if (!member.getName().matches("[a-z0-9]+"))
 					{
 						continue;
 					}
@@ -156,7 +156,7 @@ public class MXProjectResource
 					{
 						continue;
 					}
-					if (member.getName().startsWith("."))
+					if (!member.getName().matches("[a-z0-9]+"))
 					{
 						continue;
 					}
