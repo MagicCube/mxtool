@@ -15,7 +15,7 @@
    </extension>
    <extension
          id="org.magiccube.mxtool.eclipse.builders.mxNature"
-         name="MagicCube MXNature"
+         name="MagicCube MXFramework"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run

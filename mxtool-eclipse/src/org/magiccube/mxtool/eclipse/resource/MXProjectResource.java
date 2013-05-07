@@ -172,4 +172,66 @@ public class MXProjectResource
 		}
 		return result;
 	}
+
+	public IFile getFileOfClass(String p_className, String p_extension)
+	{
+		if (p_className.equals("MXObject"))
+		{
+			p_className = "mx.MXObject";
+		}
+		else if (p_className.equals("MXComponent"))
+		{
+			p_className = "mx.MXComponent";
+		}
+		return getScriptFolder().getFile(p_className.replaceAll("\\.", "\\/") + "." + p_extension);
+	}
+
+	public IFile getFileOfClass(String p_className)
+	{
+		return getFileOfClass(p_className, "js");
+	}
+
+	public IFolder getFolderOfNamespace(String p_namespace)
+	{
+		return getScriptFolder().getFolder(p_namespace.replaceAll("\\.", "\\/"));
+	}
+
+	public String getClassNameOfFile(IFile p_file)
+	{
+		return getNamespaceOfFile(p_file) + "." + p_file.getName().substring(0, p_file.getName().length() - 3);
+	}
+
+	public String getNamespaceOfFile(IFile p_file)
+	{
+		return p_file.getParent().getProjectRelativePath().makeRelativeTo(getScriptPath()).toString().replaceAll("\\/", ".");
+	}
+
+	public boolean hasClass(String p_className)
+	{
+		if (p_className.equals("MXObject") || p_className.equals("MXComponent"))
+		{
+			return true;
+		}
+		IFile file = getFileOfClass(p_className);
+		return file.exists();
+	}
+
+	public boolean hasNamespace(String p_namespace)
+	{
+		IFolder folder = getFolderOfNamespace(p_namespace);
+		return folder.exists();
+	}
+
+	public boolean hasResource(String res)
+	{
+		int pos = res.lastIndexOf(".");
+		if (pos > 0)
+		{
+			String resName = res.substring(0, pos);
+			String extension = res.substring(pos + 1);
+			IFile file = getFileOfClass(resName, extension);
+			return file.exists();
+		}
+		return true;
+	}
 }
