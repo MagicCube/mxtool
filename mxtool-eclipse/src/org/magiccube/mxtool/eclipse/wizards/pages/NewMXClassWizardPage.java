@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.fieldassist.AutoCompleteField;
 import org.eclipse.jface.fieldassist.ComboContentAdapter;
@@ -103,6 +102,13 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 	public void createControl(Composite p_parent)
 	{
 		Composite container = new Composite(p_parent, SWT.NULL);
+		setControl(container);
+		if (getProject() == null || getGenOptions() == null || getProjectProperties() == null || !getProjectProperties().isEnabled())
+		{
+			return;
+		}
+		
+		
 		GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.verticalSpacing = 9;
 		container.setLayout(gridLayout);
@@ -114,7 +120,7 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 			namespaces = getMXProjectResource().getNamespaces();
 			classNames = getMXProjectResource().getClassNames();
 		}
-		catch (CoreException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -132,8 +138,6 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 			addSubcontrols(container);
 		}
 
-		setControl(container);
-
 		applyOptions(_genOptions);
 	}
 
@@ -141,7 +145,7 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 	{
 		Label caption = new Label(container, SWT.NULL);
 		caption.setText(p_title);
-		caption.setFont(new Font(getShell().getDisplay(), getDialogFontName(), 12, java.awt.Font.BOLD));
+		caption.setFont(new Font(getShell().getDisplay(), "Verdana", 12, java.awt.Font.BOLD));
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.horizontalSpan = 3;
 		caption.setLayoutData(gridData);
@@ -221,6 +225,12 @@ public class NewMXClassWizardPage extends WizardPage implements ModifyListener
 		if (namespaceCombo.getText().equals(""))
 		{
 			setErrorMessage("Namespace can not be empty.");
+			return false;
+		}
+		
+		if (namespaceCombo.getText().equals("me"))
+		{
+			setErrorMessage("'me' is a preserved keyword of MXFramework.");
 			return false;
 		}
 
