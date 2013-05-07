@@ -1,5 +1,8 @@
 package org.magiccube.mxtool.eclipse.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -282,23 +285,23 @@ public class MXProjectPropertyPage extends PropertyPage
 		IProject project = getProject();
 		IProjectDescription description = project.getDescription();
 		String[] natures = description.getNatureIds();
+		List<String> newNatureList = new ArrayList<String>();
 
 		for (int i = 0; i < natures.length; ++i)
 		{
-			if (MXNature.NATURE_ID.equals(natures[i]))
+			if (MXNature.NATURE_ID.equals(natures[i]) || "org.eclipse.jdt.core.javabuilder".equals(natures[i]))
 			{
-				// Remove the nature
-				String[] newNatures = new String[natures.length - 1];
-				System.arraycopy(natures, 0, newNatures, 0, i);
-				System.arraycopy(natures, i + 1, newNatures, i, natures.length - i - 1);
-				description.setNatureIds(newNatures);
-				project.setDescription(description, null);
+				continue;
+			}
+			else
+			{
+				newNatureList.add(natures[i]);
 			}
 		}
 
-		String[] newNatures = new String[natures.length + 1];
-		System.arraycopy(natures, 0, newNatures, 0, natures.length);
-		newNatures[natures.length] = MXNature.NATURE_ID;
+		newNatureList.add(MXNature.NATURE_ID);
+		String[] newNatures = new String[newNatureList.size()];
+		newNatures = newNatureList.toArray(newNatures);
 		description.setNatureIds(newNatures);
 		project.setDescription(description, null);
 	}
