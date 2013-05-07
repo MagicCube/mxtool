@@ -1,6 +1,7 @@
 package org.magiccube.mxtool.eclipse.properties;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -13,6 +14,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -32,6 +34,8 @@ public class MXProjectPropertyPage extends PropertyPage
 	private Button _enableMXFrameworkCheckbox = null;
 	private Text _scriptPathText = null;
 	private Button _scriptPathBrowseButton = null;
+	private Button _updateMXFrameworkButton = null;
+	private Button _updateJQueryButton = null;
 
 	@Override
 	protected Control createContents(Composite p_parent)
@@ -89,7 +93,7 @@ public class MXProjectPropertyPage extends PropertyPage
 						if (path.toString().startsWith(project.getFullPath().toString()))
 						{
 							path = (Path) path.makeRelativeTo(project.getFullPath());
-							IFolder folder = (IFolder) project.findMember(path);
+							IFolder folder = project.getFolder(path);
 							IFolder jqueryFolder = folder.getFolder("lib/jquery");
 							if (!jqueryFolder.exists() || !jqueryFolder.getFile("jquery.js").exists())
 							{
@@ -99,7 +103,6 @@ public class MXProjectPropertyPage extends PropertyPage
 								if (msgBox.open() == SWT.YES)
 								{
 									_downloadJQuery(jqueryFolder);
-									return;
 								}
 							}
 							
@@ -113,11 +116,15 @@ public class MXProjectPropertyPage extends PropertyPage
 								{
 									_downloadMXFramework(mxFolder);
 									_scriptPathText.setText(path.toString());
+									_setMXFrameworkEnabled(true);
+									validate();
 								}
 							}
 							else
 							{
 								_scriptPathText.setText(path.toString());
+								_setMXFrameworkEnabled(true);
+								validate();
 							}
 						}
 						else
@@ -131,6 +138,36 @@ public class MXProjectPropertyPage extends PropertyPage
 				}
 			}
 		});
+		
+		
+		
+		new Label(groupContainer, SWT.NULL);
+		
+		Composite buttonRow = new Composite(groupContainer, SWT.NULL);
+		RowLayout buttonRowLayout = new RowLayout(SWT.HORIZONTAL);
+		buttonRow.setLayout(buttonRowLayout);
+		buttonRow.setData(new GridData(GridData.FILL_HORIZONTAL));
+		_updateMXFrameworkButton = new Button(buttonRow, SWT.PUSH);
+		_updateMXFrameworkButton.setText("Update MXFramework");
+		_updateMXFrameworkButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				_downloadMXFramework(getProject().getFolder(_scriptPathText.getText() + "/mx"));
+			}
+		});
+		_updateJQueryButton = new Button(buttonRow, SWT.PUSH);
+		_updateJQueryButton.setText("Update JQuery");
+		_updateJQueryButton.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				_downloadJQuery(getProject().getFolder(_scriptPathText.getText() + "/lib/jquery"));
+			}
+		});
+		
 
 		try
 		{
@@ -165,25 +202,23 @@ public class MXProjectPropertyPage extends PropertyPage
 	{
 		IProject project = getProject();
 		_properties = MXProjectProperties.getProperties(project);
-		_setMXFrameworkEnabled(_properties.isEnabled());
 		String path = _properties.getScriptPath();
 		_scriptPathText.setText(path != null ? path : "");
+		_setMXFrameworkEnabled(_properties.isEnabled());		
+		validate();
 	}
 
 	public boolean performOk()
 	{
 		try
 		{
+			if (!validate())
+			{
+				return false;
+			}
+			
 			if (_enableMXFrameworkCheckbox.getSelection())
 			{
-				if (_scriptPathText.getText().equals(""))
-				{
-					MessageBox msgBox = new MessageBox(getShell(), SWT.ERROR);
-					msgBox.setText(Activator.PLUGIN_TITLE);
-					msgBox.setMessage("Script path can not be empty.");
-					msgBox.open();
-					return false;
-				}
 				_properties.setEnabled(true);
 				_properties.setScriptPath(_scriptPathText.getText());
 				_enableMXBuilder();
@@ -200,6 +235,45 @@ public class MXProjectPropertyPage extends PropertyPage
 			return false;
 		}
 
+		return true;
+	}
+	
+	public boolean validate()
+	{
+		if (_enableMXFrameworkCheckbox.getSelection())
+		{
+			if (_scriptPathText.getText().equals(""))
+			{
+				setErrorMessage("Script path can not be empty.");
+				return false;
+			}
+			
+			IFolder scriptFolder = getProject().getFolder(_scriptPathText.getText());
+			if (!scriptFolder.exists())
+			{
+				setErrorMessage("Script path can not be empty.");
+				return false;
+			}
+			
+			IFile jqueryFile = scriptFolder.getFile("lib/jquery/jquery.js");
+			if (!jqueryFile.exists())
+			{
+				setMessage("JQuery is not found in the script path.", WARNING);
+			}
+			else
+			{
+				setMessage(null);
+			}
+			
+			
+			IFile mxFile = scriptFolder.getFile("mx/framework-core.js");
+			if (!mxFile.exists())
+			{
+				setErrorMessage("MXFramework is not found or well structured in the script path.");
+				return false;
+			}
+		}
+		setErrorMessage(null);
 		return true;
 	}
 
@@ -253,6 +327,9 @@ public class MXProjectPropertyPage extends PropertyPage
 	{
 		_enableMXFrameworkCheckbox.setSelection(p_enabled);
 		_scriptPathBrowseButton.setEnabled(p_enabled);
+		
+		_updateMXFrameworkButton.setEnabled(p_enabled && !_scriptPathText.getText().equals(""));
+		_updateJQueryButton.setEnabled(p_enabled && !_scriptPathText.getText().equals(""));
 	}
 
 	private void _downloadJQuery(final IFolder p_jqueryFolder)

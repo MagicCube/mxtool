@@ -44,6 +44,11 @@ public class DownloadMXFrameworkJob implements IRunnableWithProgress
 			URLConnection connection = url.openConnection();
 			connection.setReadTimeout(15 * 1000);
 			InputStream downloadInputStream = connection.getInputStream();
+
+			if (_mxFolder.exists())
+			{
+				_mxFolder.delete(true, p_monitor);
+			}
 			ResourceHelper.prepareFolder(_mxFolder, p_monitor);
 			
 			IFile downloadFile = _mxFolder.getFile("mx.zip");
@@ -59,6 +64,7 @@ public class DownloadMXFrameworkJob implements IRunnableWithProgress
 			ZipFile zipFile = new ZipFile(downloadFile.getRawLocation().toString());
 			Enumeration entries = zipFile.entries();
 			ZipEntry entry = null;
+			
 			while (entries.hasMoreElements())
 			{
 				entry = (ZipEntry)entries.nextElement();
