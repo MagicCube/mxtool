@@ -39,7 +39,8 @@
          </enabledWhen>
       </page>
    </extension>
-   <extension
+    
+    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             objectClass="org.eclipse.core.resources.IFolder"

@@ -8,6 +8,22 @@ Bundle-Vendor: MagicCube
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.eclipse.ui.ide
+ org.eclipse.wst.jsdt.ui,
+ org.eclipse.jface.text,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui,
+ org.eclipse.ui.console,
+ org.eclipse.ui.ide,
+ org.eclipse.wst.jsdt.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.debug.internal.ui,
+ org.eclipse.jface.internal.text.html,
+ org.eclipse.jface.text.contentassist,
+ org.eclipse.jface.text.link,
+ org.eclipse.ui,
+ org.eclipse.ui.editors.text,
+ org.eclipse.ui.texteditor,
+ org.eclipse.ui.texteditor.link,
+ org.eclipse.wst.jsdt.internal.core,
+ org.eclipse.wst.jsdt.internal.core.util

@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+@SuppressWarnings("rawtypes")
 public class MXBuilder extends IncrementalProjectBuilder
 {
 
