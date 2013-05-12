@@ -69,13 +69,42 @@ public class MXModuleBuild
         return minFile;
     }
     
-    
+    public File getMinCssFile()
+    {
+    	File moduleFolder = getMinFolder();
+        File minFile = new File(new File(moduleFolder, "res"), "min.css");
+        return minFile;
+    }
     
     
     
     public MXBuildResult buildModule() throws IOException
     {
         MXBuildResult result = compileModuleJavaScript();
+        MXBuildResult cssResult = compileModuleCss();
+        return result.merge(cssResult);
+    }
+    
+    public MXBuildResult compileModuleCss() throws IOException
+    {
+    	MXBuildResult result = new MXBuildResult(true);
+    	List<File> files = _getFilesInDirectory(new File(_moduleFolder, "res"), "css");
+    	String css = "";
+    	for (File file : files)
+        {
+    		if (file.getName().equals("min.css"))
+        	{
+        		continue;
+        	}
+    		css += FileReader.readText(file);
+        }
+    	if (!css.trim().equals(""))
+    	{
+	    	File outputFile = getMinCssFile();
+	        TextStreamWriter writer = new TextStreamWriter(outputFile);
+	        writer.write(css);
+	        writer.close();
+    	}
         return result;
     }
 
@@ -130,8 +159,10 @@ public class MXModuleBuild
     
     
     private List<File> _getFilesInDirectory(File p_directory, String p_extension)
-    {
+    {    	
         List<File> files = new ArrayList<File>();
+        if (p_directory == null || !p_directory.exists()) return files;
+        		
         File[] subfiles = p_directory.listFiles();
         
         if (p_extension.equals("js"))
@@ -144,6 +175,10 @@ public class MXModuleBuild
                     String[] lines = FileReader.readLines(mxbuildFile);
                     for (String line : lines)
                     {
+                    	if (!line.endsWith(p_extension))
+                    	{
+                    		continue;
+                    	}
                         files.add(new File(p_directory.getAbsolutePath(), line));
                     }
                 }

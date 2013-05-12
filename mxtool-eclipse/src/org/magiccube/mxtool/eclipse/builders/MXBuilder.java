@@ -99,6 +99,7 @@ public class MXBuilder extends IncrementalProjectBuilder
 		for (String module : modules)
 		{
 			_buildMXModuleScript(module, monitor);
+			_buildMXModuleCss(module, monitor);
 		}
 	}
 
@@ -138,6 +139,48 @@ public class MXBuilder extends IncrementalProjectBuilder
 		String path = p_resource.getProjectRelativePath().makeRelativeTo(_projectResource.getScriptPath()).toString();
 		moduleName = path.substring(0, path.indexOf('/'));
 		return moduleName;
+	}
+	
+	
+	
+	
+	
+	private void _validateAndBuildMXCssFile(IFile file, IProgressMonitor monitor) throws CoreException
+	{
+		if (!_fullBuild)
+		{
+			String moduleName = _getModuleNameFromResource(file);
+			
+			_buildMXModuleCss(moduleName, monitor);
+		}
+	}
+	
+	private void _buildMXModuleCss(String p_moduleName, IProgressMonitor monitor) throws CoreException
+	{
+		IFolder moduleFolder = _projectResource.getFolderOfNamespace(p_moduleName);
+		String modulePath = moduleFolder.getLocation().toString();
+		MXModuleBuild build = null;
+		try
+		{
+			build = new MXModuleBuild(modulePath);
+			MXBuildResult result = build.compileModuleCss();
+			if (result.success)
+			{
+				moduleFolder.getFile("res/min.css").refreshLocal(IResource.DEPTH_ONE, monitor);
+			}
+			else
+			{
+				for (MXBuildError error : result.errors)
+				{
+					IFile errorFile = moduleFolder.getFile(error.path); 
+					_addMarker(errorFile, error.description, error.lineNumber, IMarker.SEVERITY_ERROR);
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private void _buildMXModuleScript(String p_moduleName, IProgressMonitor monitor) throws CoreException
@@ -293,21 +336,36 @@ public class MXBuilder extends IncrementalProjectBuilder
 			{
 				case IResourceDelta.ADDED:
 				case IResourceDelta.CHANGED:
-					if (resource instanceof IFile && resource.getName().endsWith(".js") && !resource.getName().equals("min.js"))
+					if (resource instanceof IFile)
 					{
-						_validateAndBuildMXScriptFile((IFile)resource, _monitor);
+						if (resource.getName().endsWith(".js") && !resource.getName().equals("min.js"))
+						{
+							_validateAndBuildMXScriptFile((IFile)resource, _monitor);
+						}
+						else if (resource.getName().endsWith(".css") && !resource.getName().equals("min.css"))
+						{
+							_validateAndBuildMXCssFile((IFile)resource, _monitor);
+						}
 					}
 					break;
 				case IResourceDelta.REMOVED:
-					if (resource instanceof IFile && resource.getName().equals("min.js"))
+					if (resource instanceof IFile)
 					{
-						return true;
+						if (resource.getName().equals("min.js") || resource.getName().equals("min.js"))
+						{
+							return true;
+						}
+						if (resource.getName().equals("min.css") || resource.getName().equals("min.css"))
+						{
+							return true;
+						}
 					}
 					
 					try
 					{
 						String moduleName = _getModuleNameFromResource(resource);
 						_buildMXModuleScript(moduleName, _monitor);
+						_buildMXModuleCss(moduleName, _monitor);
 					}
 					catch (Exception e)
 					{
@@ -333,15 +391,29 @@ public class MXBuilder extends IncrementalProjectBuilder
 		{
 			if (!_needMXBuild(resource)) return true;
 			
-			if (resource instanceof IFile && resource.getName().endsWith(".js") && !resource.getName().equals("min.js"))
+			if (resource instanceof IFile)
 			{
-				try
+				if (resource.getName().endsWith(".js") && !resource.getName().equals("min.js"))
 				{
-					_validateAndBuildMXScriptFile((IFile)resource, _monitor);
+					try
+					{
+						_validateAndBuildMXScriptFile((IFile)resource, _monitor);
+					}
+					catch (CoreException e)
+					{
+						e.printStackTrace();
+					}
 				}
-				catch (CoreException e)
+				else if (resource.getName().endsWith(".css") && !resource.getName().equals("min.css"))
 				{
-					e.printStackTrace();
+					try
+					{
+						_validateAndBuildMXCssFile((IFile)resource, _monitor);
+					}
+					catch (CoreException e)
+					{
+						e.printStackTrace();
+					}
 				}
 			}
 			return true;

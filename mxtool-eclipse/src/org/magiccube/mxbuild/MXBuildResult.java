@@ -12,4 +12,14 @@ public class MXBuildResult
 	{
 		success = p_success;
 	}
+	
+	public MXBuildResult merge(MXBuildResult p_result)
+	{
+		if (p_result.success == false)
+		{
+			this.success = false;
+			errors.addAll(p_result.errors);
+		}
+		return this;
+	}
 }
