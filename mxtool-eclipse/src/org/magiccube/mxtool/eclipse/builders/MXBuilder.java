@@ -45,6 +45,16 @@ public class MXBuilder extends IncrementalProjectBuilder
 	 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException
 	{
+		if (_projectResource == null)
+		{
+			_projectResource = new MXProjectResource(getProject());
+		}
+		if (_projectResource.getProjectProperties() == null || !_projectResource.getProjectProperties().isEnabled())
+		{
+			return null;
+		}
+		
+		
 		if (kind == FULL_BUILD)
 		{
 			fullBuild(monitor);
@@ -66,6 +76,15 @@ public class MXBuilder extends IncrementalProjectBuilder
 
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException
 	{
+		if (_projectResource == null)
+		{
+			_projectResource = new MXProjectResource(getProject());
+		}
+		if (_projectResource.getProjectProperties() == null || !_projectResource.getProjectProperties().isEnabled())
+		{
+			return;
+		}
+		
 		try
 		{
 			_fullBuild = true;
@@ -85,6 +104,15 @@ public class MXBuilder extends IncrementalProjectBuilder
 
 	protected void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) throws CoreException
 	{
+		if (_projectResource == null)
+		{
+			_projectResource = new MXProjectResource(getProject());
+		}
+		if (_projectResource.getProjectProperties() == null || !_projectResource.getProjectProperties().isEnabled())
+		{
+			return;
+		}
+		
 		delta.accept(new MXDeltaVisitor(monitor));
 	}
 	
@@ -142,6 +170,12 @@ public class MXBuilder extends IncrementalProjectBuilder
 
 	private boolean _validateMXScriptFile(IFile file)
 	{
+		String className = _projectResource.getClassNameOfFile(file);
+		if (!className.matches("^[a-z][a-zA-Z0-9\\.-]+$"))
+		{
+			return true;
+		}
+		
 		boolean result = true;
 		MXScriptValidator validator = new MXScriptValidator(_projectResource);
 		InputStream stream;
@@ -210,10 +244,10 @@ public class MXBuilder extends IncrementalProjectBuilder
 		if (_projectResource == null)
 		{
 			_projectResource = new MXProjectResource(getProject());
-			if (_projectResource.getProjectProperties() == null || !_projectResource.getProjectProperties().isEnabled())
-			{
-				return false;
-			}
+		}
+		if (_projectResource.getProjectProperties() == null || !_projectResource.getProjectProperties().isEnabled())
+		{
+			return false;
 		}
 		if (!resource.getProjectRelativePath().toString().startsWith(_projectResource.getScriptPath().toString()))
 		{

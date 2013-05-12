@@ -51,7 +51,7 @@ public class MXProjectResource
 
 	public IFolder getScriptFolder()
 	{
-		if (_scriptFolder == null)
+		if (_scriptFolder == null && getScriptPath() != null)
 		{
 			_scriptFolder = _project.getFolder(getScriptPath());
 		}

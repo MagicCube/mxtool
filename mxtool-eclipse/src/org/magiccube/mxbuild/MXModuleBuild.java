@@ -15,6 +15,7 @@ import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.JSError;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
@@ -44,7 +45,7 @@ public class MXModuleBuild
     
     public static Compiler getClosureCompiler()
     {
-        Compiler.setLoggingLevel(Level.INFO);
+        Compiler.setLoggingLevel(Level.SEVERE);
         Compiler compiler = new Compiler();
         return compiler;
     }
@@ -177,6 +178,7 @@ public class MXModuleBuild
     private static CompilerOptions _getCompilerOptions()
     {
         CompilerOptions compilerOptions = new CompilerOptions();
+        compilerOptions.setLanguageIn(LanguageMode.ECMASCRIPT5);
         CompilationLevel.SIMPLE_OPTIMIZATIONS.setOptionsForCompilationLevel(compilerOptions);
         return compilerOptions;
     }
