@@ -62,7 +62,28 @@ public class MXProjectResource
 	{
 		List<String> result = new ArrayList<String>();
 		IFolder rootFolder = getScriptFolder();
-		List<IFolder> subfolders = _getSubfolders(rootFolder);
+		List<IFolder> subfolders = _getSubfolders(rootFolder, true);
+		for (IFolder subfolder : subfolders)
+		{
+			IPath path = subfolder.getProjectRelativePath().makeRelativeTo(getScriptPath());
+			String ns = path.toString().replaceAll("\\/", ".");
+			if (ns.equals("lib") || ns.startsWith("lib"))
+			{
+				continue;
+			}
+			result.add(ns);
+		}
+
+		String[] array = new String[result.size()];
+		array = result.toArray(array);
+		return array;
+	}
+	
+	public String[] getModuleNames() throws CoreException 
+	{
+		List<String> result = new ArrayList<String>();
+		IFolder rootFolder = getScriptFolder();
+		List<IFolder> subfolders = _getSubfolders(rootFolder, false);
 		for (IFolder subfolder : subfolders)
 		{
 			IPath path = subfolder.getProjectRelativePath().makeRelativeTo(getScriptPath());
@@ -142,7 +163,7 @@ public class MXProjectResource
 		return result;
 	}
 
-	private List<IFolder> _getSubfolders(IFolder p_parentFolder) throws CoreException
+	private List<IFolder> _getSubfolders(IFolder p_parentFolder, boolean p_recursive) throws CoreException
 	{
 		List<IFolder> result = new ArrayList<IFolder>();
 		IResource[] members = p_parentFolder.members();
@@ -162,7 +183,10 @@ public class MXProjectResource
 					}
 					IFolder folder = (IFolder) member;
 					result.add(folder);
-					result.addAll(_getSubfolders(folder));
+					if (p_recursive)
+					{
+						result.addAll(_getSubfolders(folder, true));
+					}
 				}
 				catch (Exception e)
 				{

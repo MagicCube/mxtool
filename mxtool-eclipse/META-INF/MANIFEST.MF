@@ -27,3 +27,11 @@ Import-Package: org.eclipse.debug.internal.ui,
  org.eclipse.ui.texteditor.link,
  org.eclipse.wst.jsdt.internal.core,
  org.eclipse.wst.jsdt.internal.core.util
+Export-Package: com.google.common.base,
+ com.google.common.collect,
+ com.google.javascript.jscomp,
+ com.google.javascript.jscomp.deps,
+ com.google.javascript.rhino,
+ com.google.javascript.rhino.jstype
+Bundle-ClassPath: .,
+ lib/compiler.jar

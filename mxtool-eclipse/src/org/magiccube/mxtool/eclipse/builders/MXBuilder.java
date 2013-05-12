@@ -1,9 +1,11 @@
 package org.magiccube.mxtool.eclipse.builders;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -14,9 +16,12 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.magiccube.common.io.TextStreamReader;
+import org.magiccube.mxbuild.MXBuildError;
+import org.magiccube.mxbuild.MXBuildResult;
+import org.magiccube.mxbuild.MXModuleBuild;
 import org.magiccube.mxtool.eclipse.resource.MXProjectResource;
-import org.magiccube.mxtool.validators.MXScriptLineValidator;
-import org.magiccube.mxtool.validators.ValidationResult;
+import org.magiccube.mxtool.eclipse.validators.MXScriptValidator;
+import org.magiccube.mxtool.eclipse.validators.ValidationResult;
 
 @SuppressWarnings("rawtypes")
 public class MXBuilder extends IncrementalProjectBuilder
@@ -25,6 +30,7 @@ public class MXBuilder extends IncrementalProjectBuilder
 	private static final String MARKER_TYPE = "org.magiccube.mxtool.eclipse.builders.mxBuilderProblem";
 
 	private MXProjectResource _projectResource = null;
+	private boolean _fullBuild = false;
 
 	public MXBuilder()
 	{
@@ -62,16 +68,24 @@ public class MXBuilder extends IncrementalProjectBuilder
 	{
 		try
 		{
-			getProject().accept(new MXResourceVisitor());
+			_fullBuild = true;
+			getProject().accept(new MXRecursiveVisitor(monitor));
 		}
-		catch (CoreException e)
+		catch (Exception e)
 		{
+		}
+		_fullBuild = false;
+		
+		String[] modules = _projectResource.getModuleNames();
+		for (String module : modules)
+		{
+			_buildMXModuleScript(module, monitor);
 		}
 	}
 
 	protected void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) throws CoreException
 	{
-		delta.accept(new MXDeltaVisitor());
+		delta.accept(new MXDeltaVisitor(monitor));
 	}
 	
 	
@@ -80,56 +94,85 @@ public class MXBuilder extends IncrementalProjectBuilder
 	
 
 
-	private void _checkJavaScript(IResource resource)
+	private void _validateAndBuildMXScriptFile(IFile file, IProgressMonitor monitor) throws CoreException
 	{
-		if (resource instanceof IFile && resource.getName().endsWith(".js"))
+		if (_validateMXScriptFile(file) && !_fullBuild)
 		{
-			IFile file = (IFile) resource;
-			_deleteMarkers(file);
+			String moduleName = _getModuleNameFromResource(file);
 			
-			if (_projectResource == null)
-			{
-				_projectResource = new MXProjectResource(getProject());
-				if (_projectResource.getProjectProperties() == null || !_projectResource.getProjectProperties().isEnabled())
-				{
-					return;
-				}
-			}
-			
-			
-			if (!file.getProjectRelativePath().toString().startsWith(_projectResource.getScriptPath().toString()))
-			{
-				return;
-			}
+			_buildMXModuleScript(moduleName, monitor);
+		}
+	}
 
-			MXScriptLineValidator validator = new MXScriptLineValidator(_projectResource);
-			InputStream stream;
-			try
+	private String _getModuleNameFromResource(IResource p_resource)
+	{
+		String moduleName;
+		String path = p_resource.getProjectRelativePath().makeRelativeTo(_projectResource.getScriptPath()).toString();
+		moduleName = path.substring(0, path.indexOf('/'));
+		return moduleName;
+	}
+
+	private void _buildMXModuleScript(String p_moduleName, IProgressMonitor monitor) throws CoreException
+	{
+		IFolder moduleFolder = _projectResource.getFolderOfNamespace(p_moduleName);
+		String modulePath = moduleFolder.getLocation().toString();
+		MXModuleBuild build = null;
+		try
+		{
+			build = new MXModuleBuild(modulePath);
+			MXBuildResult result = build.compileModuleJavaScript();
+			if (result.success)
 			{
-				stream = file.getContents();
-				TextStreamReader reader = new TextStreamReader(stream);
-				String line = null;
-				String[] lines = reader.readLines();
-				for (int i = 0; i < lines.length; i++)
-				{
-					line = lines[i];
-					if (line.trim().equals(""))
-					{
-						continue;
-					}
-					ValidationResult result = validator.validate(file, line);
-					if (!result.isValidated())
-					{
-						_addMarker(file, result.getMessage(), i + 1, IMarker.SEVERITY_ERROR);
-					}
-				}
-				reader.close();
+				moduleFolder.getFile("min.js").refreshLocal(IResource.DEPTH_ONE, monitor);
 			}
-			catch (Exception e)
+			else
 			{
-				e.printStackTrace();
+				for (MXBuildError error : result.errors)
+				{
+					IFile errorFile = moduleFolder.getFile(error.path); 
+					_addMarker(errorFile, error.description, error.lineNumber, IMarker.SEVERITY_ERROR);
+				}
 			}
 		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private boolean _validateMXScriptFile(IFile file)
+	{
+		boolean result = true;
+		MXScriptValidator validator = new MXScriptValidator(_projectResource);
+		InputStream stream;
+		try
+		{
+			stream = file.getContents();
+			TextStreamReader reader = new TextStreamReader(stream);
+			String line = null;
+			String[] lines = reader.readLines();
+			for (int i = 0; i < lines.length; i++)
+			{
+				line = lines[i];
+				if (line.trim().equals(""))
+				{
+					continue;
+				}
+				ValidationResult validationResult = validator.validate(file, line);
+				if (!validationResult.isValidated())
+				{
+					result = false;
+					_addMarker(file, validationResult.getMessage(), i + 1, IMarker.SEVERITY_ERROR);
+				}
+			}
+			reader.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
 	}
 	
 
@@ -151,7 +194,7 @@ public class MXBuilder extends IncrementalProjectBuilder
 		}
 	}
 
-	private void _deleteMarkers(IFile file)
+	private void _deleteMarkers(IResource file)
 	{
 		try
 		{
@@ -162,13 +205,41 @@ public class MXBuilder extends IncrementalProjectBuilder
 		}
 	}
 	
-	
+	private boolean _needMXBuild(IResource resource)
+	{
+		if (_projectResource == null)
+		{
+			_projectResource = new MXProjectResource(getProject());
+			if (_projectResource.getProjectProperties() == null || !_projectResource.getProjectProperties().isEnabled())
+			{
+				return false;
+			}
+		}
+		if (!resource.getProjectRelativePath().toString().startsWith(_projectResource.getScriptPath().toString()))
+		{
+			return false;
+		}
+		
+		if (resource.getProjectRelativePath().toString().startsWith(_projectResource.getScriptPath().toString() + "/lib"))
+		{
+			return false;
+		}
+		
+		return true;
+	}
 	
 	
 	
 	
 	class MXDeltaVisitor implements IResourceDeltaVisitor
 	{
+		private IProgressMonitor _monitor;
+		
+		public MXDeltaVisitor(IProgressMonitor monitor)
+		{
+			_monitor = monitor;
+		}
+		
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -179,18 +250,35 @@ public class MXBuilder extends IncrementalProjectBuilder
 		public boolean visit(IResourceDelta delta) throws CoreException
 		{
 			IResource resource = delta.getResource();
+			if (!_needMXBuild(resource)) return true;
+			
+			
+			// Start MXBuild
+			_deleteMarkers(resource);
 			switch (delta.getKind())
 			{
 				case IResourceDelta.ADDED:
-					// handle added resource
-					_checkJavaScript(resource);
+				case IResourceDelta.CHANGED:
+					if (resource instanceof IFile && resource.getName().endsWith(".js") && !resource.getName().equals("min.js"))
+					{
+						_validateAndBuildMXScriptFile((IFile)resource, _monitor);
+					}
 					break;
 				case IResourceDelta.REMOVED:
-					// handle removed resource
-					break;
-				case IResourceDelta.CHANGED:
-					// handle changed resource
-					_checkJavaScript(resource);
+					if (resource instanceof IFile && resource.getName().equals("min.js"))
+					{
+						return true;
+					}
+					
+					try
+					{
+						String moduleName = _getModuleNameFromResource(resource);
+						_buildMXModuleScript(moduleName, _monitor);
+					}
+					catch (Exception e)
+					{
+						
+					}
 					break;
 			}
 			// return true to continue visiting children.
@@ -198,12 +286,30 @@ public class MXBuilder extends IncrementalProjectBuilder
 		}
 	}
 
-	class MXResourceVisitor implements IResourceVisitor
+	class MXRecursiveVisitor implements IResourceVisitor
 	{
+		private IProgressMonitor _monitor;
+		
+		public MXRecursiveVisitor(IProgressMonitor monitor)
+		{
+			_monitor = monitor;
+		}
+		
 		public boolean visit(IResource resource)
 		{
-			_checkJavaScript(resource);
-			// return true to continue visiting children.
+			if (!_needMXBuild(resource)) return true;
+			
+			if (resource instanceof IFile && resource.getName().endsWith(".js") && !resource.getName().equals("min.js"))
+			{
+				try
+				{
+					_validateAndBuildMXScriptFile((IFile)resource, _monitor);
+				}
+				catch (CoreException e)
+				{
+					e.printStackTrace();
+				}
+			}
 			return true;
 		}
 	}
