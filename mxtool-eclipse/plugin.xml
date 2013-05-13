@@ -84,6 +84,25 @@
                enablesFor="1"
                id="org.magiccube.mxtool.eclipse.actions.newMXObjectClassAction"/>
        </objectContribution>
+      <objectContribution
+            id="org.magiccube.mxtool.eclipse.contribution2"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               id="org.magiccube.mxtool.eclipse.menus.fileMenu"
+               label="MXFramework"
+               path="additions">
+            <separator
+                  name="newGroup">
+            </separator>
+         </menu>
+         <action
+               class="org.magiccube.mxtool.eclipse.actions.CopyMXQualifiedNameAction"
+               enablesFor="1"
+               id="org.magiccube.mxtool.eclipse.actions.copyAsMXQualifiedName"
+               label="Copy as MX Classified Name"
+               menubarPath="org.magiccube.mxtool.eclipse.menus.fileMenu/newGroup">
+         </action>
+      </objectContribution>
    </extension>
    <extension
          id="org.magiccube.mxtool.eclipse.builders.mxBuilderProblem"

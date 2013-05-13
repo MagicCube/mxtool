@@ -222,7 +222,7 @@ public class MXProjectResource
 
 	public String getClassNameOfFile(IFile p_file)
 	{
-		return getNamespaceOfFile(p_file) + "." + p_file.getName().substring(0, p_file.getName().length() - 3);
+		return getNamespaceOfFile(p_file) + "." + p_file.getName().substring(0, p_file.getName().length() - p_file.getFileExtension().length() - 1);
 	}
 
 	public String getNamespaceOfFile(IFile p_file)
