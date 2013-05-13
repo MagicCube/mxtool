@@ -2,7 +2,10 @@ package org.magiccube.mxbuild;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,7 @@ import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.JSError;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
+import com.yahoo.platform.yui.compressor.CssCompressor;
 
 
 public class MXModuleBuild
@@ -100,10 +104,16 @@ public class MXModuleBuild
         }
     	if (!css.trim().equals(""))
     	{
-	    	File outputFile = getMinCssFile();
-	        TextStreamWriter writer = new TextStreamWriter(outputFile);
-	        writer.write(css);
-	        writer.close();
+    		StringReader reader = new StringReader(css);
+    		CssCompressor compressor = new CssCompressor(reader);
+    		
+    		File outputFile = getMinCssFile();
+    		FileOutputStream outputStream = new FileOutputStream(outputFile);
+    		OutputStreamWriter writer = new OutputStreamWriter(outputStream, "UTF-8");
+    		compressor.compress(writer, 0);
+	        
+    		writer.close();
+	        reader.close();
     	}
         return result;
     }
