@@ -6,7 +6,7 @@
 	<html>
 	<head>
 	<title>mxtool-eclipse-updatesite</title>
-	<style>@import url("WebContent/site.css");</style>
+	<style>@import url("res/site.css");</style>
 	</head>
 	<body>
 	<h1 class="title">mxtool-eclipse-updatesite</h1>
