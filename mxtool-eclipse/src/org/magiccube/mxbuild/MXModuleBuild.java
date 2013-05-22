@@ -52,6 +52,7 @@ public class MXModuleBuild
     {
         Compiler.setLoggingLevel(Level.SEVERE);
         Compiler compiler = new Compiler();
+        compiler.disableThreads();
         return compiler;
     }
     
