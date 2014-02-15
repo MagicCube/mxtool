@@ -12,6 +12,9 @@ public class MXScriptValidator
 	private static Pattern _extendPattern = Pattern.compile("=\\s*\\$extend\\(([^\\)]*)\\)");
 	private static Pattern _nsPattern = Pattern.compile("\\$ns\\(\"([^\")]*)\"\\)");
 	private static Pattern _includePattern = Pattern.compile("\\$include\\(\"([^\")]*)\"\\)");
+	private static Pattern _classDeclarationPattern = Pattern.compile("([a-z0-9\\.]+\\.[A-Z][a-zA-Z0-9]+)\\s*=\\s*function\\(\\)");
+	private static Pattern _classNameDeclarationPattern = Pattern.compile("([a-z0-9\\.]+\\.[A-Z][a-zA-Z0-9]+).className\\s*=\\s*\\\"([a-z0-9\\.]+\\.[A-Z][a-zA-Z0-9]+)\\\"");
+
 
 	private MXProjectResource _projectResource = null;
 
@@ -31,11 +34,7 @@ public class MXScriptValidator
 				if (_projectResource.hasNamespace(namespace))
 				{
 					String ns = _projectResource.getNamespaceOfFile(p_file);
-					if (ns.equals(namespace))
-					{
-						return new ValidationResult(true);
-					}
-					else
+					if (!ns.equals(namespace))
 					{
 						return new ValidationResult(false, "The namespace of this class should be '" + ns  + "'.");
 					}
@@ -59,11 +58,7 @@ public class MXScriptValidator
 					return new ValidationResult(false, "The resource name can not be empty.");
 				}
 				
-				if (_projectResource.hasResource(res))
-				{
-					return new ValidationResult(true);
-				}
-				else
+				if (!_projectResource.hasResource(res))
 				{
 					return new ValidationResult(false, "The resource file '" + res  + "' is not found.");
 				}
@@ -82,13 +77,32 @@ public class MXScriptValidator
 					return new ValidationResult(false, "The class name can not be empty.");
 				}
 				
-				if (_projectResource.hasClass(className))
-				{
-					return new ValidationResult(true);
-				}
-				else
+				if (!_projectResource.hasClass(className))
 				{
 					return new ValidationResult(false, "Class '" + className  + "' is not found.");
+				}
+			}
+		}
+		
+		matcher = _classDeclarationPattern.matcher(p_line);
+		if (matcher.find())
+		{
+			if (matcher.groupCount() >= 1)
+			{
+				boolean endsWithClass = false;
+				String className = matcher.group(1);
+				if (className.endsWith("Class"))
+				{
+					endsWithClass = true;
+					className = className.substring(0, className.length() - "Class".length());
+				}
+				if (!className.startsWith("me."))
+				{
+					String supposedName = _projectResource.getClassNameOfFile(p_file);
+					if (!supposedName.equals(className))
+					{
+						return new ValidationResult(false, "The class name does not match the file name or path. The class name must be '" + supposedName + (endsWithClass ? "Class" : "") + "'.");
+					}
 				}
 			}
 		}
@@ -104,17 +118,46 @@ public class MXScriptValidator
 					return new ValidationResult(false, "The class name can not be empty.");
 				}
 				
-				if (_projectResource.hasClass(className))
-				{
-					return new ValidationResult(true);
-				}
-				else
+				if (!_projectResource.hasClass(className))
 				{
 					return new ValidationResult(false, "The super class '" + className  + "' is not found.");
 				}
 			}
 		}
 		
+		
+		
+		
+		matcher = _classNameDeclarationPattern.matcher(p_line);
+		if (matcher.find())
+		{
+			if (matcher.groupCount() >= 2)
+			{
+				String supposedName = _projectResource.getClassNameOfFile(p_file);
+				String className = matcher.group(1);
+				boolean endsWithClass = false;
+				if (className.endsWith("Class"))
+				{
+					endsWithClass = true;
+					className = className.substring(0, className.length() - "Class".length());
+				}
+				if (!supposedName.equals(className))
+				{
+					return new ValidationResult(false, "The class name does not match the file name or path. The class name must be '" + supposedName + (endsWithClass ? "Class" : "") + "'.");
+				}
+				
+				className = matcher.group(2);
+				if (endsWithClass)
+				{
+					className = className.substring(0, className.length() - "Class".length());
+				}
+				if (!supposedName.equals(className))
+				{
+					return new ValidationResult(false, "The class name does not match the file name or path. The class name must be '" + supposedName + (endsWithClass ? "Class" : "") + "'.");
+				}
+			}
+		}
+				
 		return new ValidationResult(true);
 	}
 }

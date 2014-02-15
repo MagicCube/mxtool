@@ -74,6 +74,7 @@ public class MXClassGenerator
 	{
 		builder.append("    return me.endOfClass(arguments);\r\n");
 		builder.append("};\r\n");
+		builder.append(p_options.getFullClassName() + ".className = \"" + p_options.getFullClassName() + "\";\r\n");
 	}
 
 	
