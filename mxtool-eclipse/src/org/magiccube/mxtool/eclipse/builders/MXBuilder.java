@@ -157,6 +157,8 @@ public class MXBuilder extends IncrementalProjectBuilder
 	
 	private void _buildMXModuleCss(String p_moduleName, IProgressMonitor monitor) throws CoreException
 	{
+		if (_projectResource.getProjectProperties().isValidationOnly()) return;
+		
 		IFolder moduleFolder = _projectResource.getFolderOfNamespace(p_moduleName);
 		String modulePath = moduleFolder.getLocation().toString();
 		MXModuleBuild build = null;
@@ -185,6 +187,8 @@ public class MXBuilder extends IncrementalProjectBuilder
 
 	private void _buildMXModuleScript(String p_moduleName, IProgressMonitor monitor) throws CoreException
 	{
+		if (_projectResource.getProjectProperties().isValidationOnly()) return;
+		
 		IFolder moduleFolder = _projectResource.getFolderOfNamespace(p_moduleName);
 		String modulePath = moduleFolder.getLocation().toString();
 		MXModuleBuild build = null;

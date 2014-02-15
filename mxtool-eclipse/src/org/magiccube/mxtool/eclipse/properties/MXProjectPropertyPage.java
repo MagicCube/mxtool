@@ -35,6 +35,7 @@ import org.magiccube.mxtool.eclipse.jobs.DownloadMXFrameworkJob;
 public class MXProjectPropertyPage extends PropertyPage
 {
 	private Button _enableMXFrameworkCheckbox = null;
+	private Button _validationOnlyCheckbox = null;
 	private Text _scriptPathText = null;
 	private Button _scriptPathBrowseButton = null;
 	private Button _updateMXFrameworkButton = null;
@@ -57,6 +58,21 @@ public class MXProjectPropertyPage extends PropertyPage
 			public void widgetSelected(SelectionEvent e)
 			{
 				_setMXFrameworkEnabled(_enableMXFrameworkCheckbox.getSelection());
+				if (_enableMXFrameworkCheckbox.getSelection())
+				{
+					_setValidationOnly(false);
+				}
+			}
+		});
+		
+		_validationOnlyCheckbox = new Button(container, SWT.CHECK);
+		_validationOnlyCheckbox.setText("Perform validation only");
+		_validationOnlyCheckbox.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				_setValidationOnly(_validationOnlyCheckbox.getSelection());
 			}
 		});
 
@@ -207,7 +223,15 @@ public class MXProjectPropertyPage extends PropertyPage
 		_properties = MXProjectProperties.getProperties(project);
 		String path = _properties.getScriptPath();
 		_scriptPathText.setText(path != null ? path : "");
-		_setMXFrameworkEnabled(_properties.isEnabled());		
+		_setMXFrameworkEnabled(_properties.isEnabled());
+		if (_properties.isEnabled())
+		{
+			_setValidationOnly(_properties.isValidationOnly());
+		}
+		else
+		{
+			_setValidationOnly(false);
+		}
 		validate();
 	}
 
@@ -224,11 +248,13 @@ public class MXProjectPropertyPage extends PropertyPage
 			{
 				_properties.setEnabled(true);
 				_properties.setScriptPath(_scriptPathText.getText());
+				_properties.setValidationOnly(_validationOnlyCheckbox.getSelection());
 				_enableMXBuilder();
 			}
 			else
 			{
 				_properties.setEnabled(false);
+				_properties.setValidationOnly(false);
 				_properties.setScriptPath(null);
 				_disableMXBuilder();
 			}
@@ -254,7 +280,7 @@ public class MXProjectPropertyPage extends PropertyPage
 			IFolder scriptFolder = getProject().getFolder(_scriptPathText.getText());
 			if (!scriptFolder.exists())
 			{
-				setErrorMessage("Script path can not be empty.");
+				setErrorMessage("Script path does not exist.");
 				return false;
 			}
 			
@@ -329,10 +355,16 @@ public class MXProjectPropertyPage extends PropertyPage
 	private void _setMXFrameworkEnabled(boolean p_enabled)
 	{
 		_enableMXFrameworkCheckbox.setSelection(p_enabled);
+		_validationOnlyCheckbox.setEnabled(p_enabled);
 		_scriptPathBrowseButton.setEnabled(p_enabled);
 		
 		_updateMXFrameworkButton.setEnabled(p_enabled && !_scriptPathText.getText().equals(""));
 		_updateJQueryButton.setEnabled(p_enabled && !_scriptPathText.getText().equals(""));
+	}
+	
+	private void _setValidationOnly(boolean p_enabled)
+	{
+		_validationOnlyCheckbox.setSelection(p_enabled);
 	}
 
 	private void _downloadJQuery(final IFolder p_jqueryFolder)

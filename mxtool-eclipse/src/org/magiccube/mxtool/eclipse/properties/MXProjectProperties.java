@@ -89,4 +89,40 @@ public class MXProjectProperties
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	
+	public boolean isValidationOnly()
+	{
+		Object bool;
+		try
+		{
+			bool = _project.getPersistentProperty(new QualifiedName("", Activator.PLUGIN_ID + ".project.validationOnly"));
+		}
+		catch (CoreException e)
+		{
+			return false;
+		}
+		
+		if (bool != null)
+		{
+			return bool.equals("true");
+		}
+		else
+		{
+			return false;
+		}
+	}
+	public void setValidationOnly(boolean p_enabled)
+	{
+		try
+		{
+			_project.setPersistentProperty(new QualifiedName("", Activator.PLUGIN_ID + ".project.validationOnly"), p_enabled ? "true" : "false");
+		}
+		catch (CoreException e)
+		{
+			e.printStackTrace();
+		}
+	}
 }
