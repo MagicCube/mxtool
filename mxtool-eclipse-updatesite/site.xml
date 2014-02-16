@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
     <category-def name="org.magiccube.mxtool.eclipse" label="MagicCube MXFramework Plugins"/>
-   <feature url="features/org.magiccube.mxtool.eclipse.feature_0.0.2.jar" id="org.magiccube.mxtool.eclipse.feature" version="0.0.2">
+   <feature url="features/org.magiccube.mxtool.eclipse.feature_0.0.3.jar" id="org.magiccube.mxtool.eclipse.feature" version="0.0.3">
       <category name="org.magiccube.mxtool.eclipse"/>
    </feature>
 </site>

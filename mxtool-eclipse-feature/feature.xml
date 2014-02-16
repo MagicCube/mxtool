@@ -2,7 +2,7 @@
 <feature
       id="org.magiccube.mxtool.eclipse.feature"
       label="MagicCube MXFramework Plugins with MXBuild"
-      version="0.0.2"
+      version="0.0.3"
       provider-name="MagicCube"
       plugin="org.magiccube.mxtool.eclipse">
 
@@ -11,13 +11,13 @@
    </description>
 
    <copyright>
-      Copyright 2005-2013 MagicCube.
+      Copyright 2005-2014 MagicCube.
    </copyright>
 
    <license url="">
       The MIT License (MIT)
 
-Copyright (c) 2005-2013 MagicCube
+Copyright (c) 2005-2014 MagicCube
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the &quot;Software&quot;), to deal
@@ -42,7 +42,7 @@ THE SOFTWARE.
          id="org.magiccube.mxtool.eclipse"
          download-size="0"
          install-size="0"
-         version="0.0.2"
+         version="0.0.3"
          unpack="false"/>
 
 </feature>
