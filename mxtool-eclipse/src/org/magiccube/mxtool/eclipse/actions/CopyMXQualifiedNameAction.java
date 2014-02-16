@@ -48,8 +48,34 @@ public class CopyMXQualifiedNameAction implements IObjectActionDelegate
 					
 					final Clipboard cb = new Clipboard(_shell.getDisplay());
 					String className = projectResource.getClassNameOfFile(file);
+					String text = null;
+					if (action.getId().equals("org.magiccube.mxtool.eclipse.actions.CopyMXQualifiedNameAction"))
+					{
+						text = className;
+					}
+					else if (action.getId().equals("org.magiccube.mxtool.eclipse.actions.copyAsInclude"))
+					{
+						if (file.getFileExtension().equals("js"))
+						{
+							text = "$import(\"" + className + "\");";
+						}
+						else
+						{
+							text = "$include(\"" + className + "." + file.getFileExtension() + "\");";
+						}
+					}
+					else if (action.getId().equals("org.magiccube.mxtool.eclipse.actions.copyAsMXGetResourcePath"))
+					{
+						text = "mx.getResourcePath(\"" + className + "\", \"" + file.getFileExtension() + "\")";
+					}
+					else if (action.getId().equals("org.magiccube.mxtool.eclipse.actions.copyAsMeGetResourcePath"))
+					{
+						int i = className.indexOf(".res.");
+						className = className.substring(i + ".res.".length());
+						text = "me.getResourcePath(\"" + className + "\", \"" + file.getFileExtension() + "\")";
+					}
 					TextTransfer textTransfer = TextTransfer.getInstance();
-			        cb.setContents(new Object[] { className }, new Transfer[] { textTransfer });
+			        cb.setContents(new Object[] { text }, new Transfer[] { textTransfer });
 				}
 			}
 		}
