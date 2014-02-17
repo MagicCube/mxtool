@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -70,8 +71,17 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 		
 		
 		_genOptions.scriptPath = getProjectProperties().getScriptPath();
-		IFolder scriptFolder = _project.getFolder(getProjectProperties().getScriptPath());
-		if (scriptFolder == null)
+		IContainer scriptFolder = null;
+		if (_genOptions.scriptPath.equals("/"))
+		{
+			scriptFolder = _project;
+		}
+		else
+		{
+			scriptFolder = _project.getFolder(getProjectProperties().getScriptPath());
+		}
+		
+		if (scriptFolder == null || !scriptFolder.exists())
 		{
 			getBasicPage().setErrorMessage("The script path '" + getProjectProperties().getScriptPath() + "' is not currently available. You can modify it in the 'MXFramework' page of Project Properties.");
 			return;
@@ -212,8 +222,11 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 		{
 			_throwCoreException(file.getFullPath() + " already exists.");
 		}
-		IFolder folder = (IFolder)file.getParent();
-		ResourceHelper.prepareFolder(folder, p_monitor);
+		IContainer folder = file.getParent();
+		if (folder instanceof IFolder)
+		{
+			ResourceHelper.prepareFolder((IFolder)folder, p_monitor);
+		}
 		try
 		{
 			InputStream stream = openContentStream(js);
@@ -235,8 +248,11 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 		{
 			_throwCoreException(file.getFullPath() + " already exists.");
 		}
-		IFolder folder = (IFolder)file.getParent();
-		ResourceHelper.prepareFolder(folder, p_monitor);
+		IContainer folder = file.getParent();
+		if (folder instanceof IFolder)
+		{
+			ResourceHelper.prepareFolder((IFolder)folder, p_monitor);
+		}
 		try
 		{
 			InputStream stream = openContentStream(html);
@@ -259,8 +275,11 @@ public abstract class NewMXClassWizard extends Wizard implements INewWizard
 		{
 			_throwCoreException(file.getFullPath() + " already exists.");
 		}
-		IFolder folder = (IFolder)file.getParent();
-		ResourceHelper.prepareFolder(folder, p_monitor);
+		IContainer folder = file.getParent();
+		if (folder instanceof IFolder)
+		{
+			ResourceHelper.prepareFolder((IFolder)folder, p_monitor);
+		}
 		try
 		{
 			InputStream stream = openContentStream(css);

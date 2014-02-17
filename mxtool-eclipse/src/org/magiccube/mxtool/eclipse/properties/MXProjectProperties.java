@@ -1,5 +1,7 @@
 package org.magiccube.mxtool.eclipse.properties;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
@@ -87,6 +89,19 @@ public class MXProjectProperties
 		catch (CoreException e)
 		{
 			e.printStackTrace();
+		}
+	}
+	public IContainer getScriptFolder()
+	{
+		String path = getScriptPath();
+		if (path.equals("/"))
+		{
+			return _project;
+		}
+		else
+		{
+			IFolder scriptFolder = _project.getFolder(path);
+			return scriptFolder;
 		}
 	}
 	

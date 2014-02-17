@@ -49,7 +49,7 @@ public class CopyMXQualifiedNameAction implements IObjectActionDelegate
 					final Clipboard cb = new Clipboard(_shell.getDisplay());
 					String className = projectResource.getClassNameOfFile(file);
 					String text = null;
-					if (action.getId().equals("org.magiccube.mxtool.eclipse.actions.CopyMXQualifiedNameAction"))
+					if (action.getId().equals("org.magiccube.mxtool.eclipse.actions.copyAsMXQualifiedName"))
 					{
 						text = className;
 					}

@@ -101,7 +101,14 @@ public class MXScriptValidator
 					String supposedName = _projectResource.getClassNameOfFile(p_file);
 					if (!supposedName.equals(className))
 					{
-						return new ValidationResult(false, "The class name does not match the file name or path. The class name must be '" + supposedName + (endsWithClass ? "Class" : "") + "'.");
+						if (endsWithClass && (className.endsWith(".New") || className.endsWith(".My") || className.endsWith(".MyNew")))
+						{
+							// Warning
+						}
+						else
+						{
+							return new ValidationResult(false, "The class name does not match the file name or path. The class name must be '" + supposedName + (endsWithClass ? "Class" : "") + "'.");
+						}
 					}
 				}
 			}
@@ -143,7 +150,14 @@ public class MXScriptValidator
 				}
 				if (!supposedName.equals(className))
 				{
-					return new ValidationResult(false, "The class name does not match the file name or path. The class name must be '" + supposedName + (endsWithClass ? "Class" : "") + "'.");
+					if (endsWithClass && (className.endsWith(".New") || className.endsWith(".My") || className.endsWith(".MyNew")))
+					{
+						// Warning
+					}
+					else
+					{
+						return new ValidationResult(false, "The class name does not match the file name or path. The class name must be '" + supposedName + (endsWithClass ? "Class" : "") + "'.");
+					}
 				}
 				
 				className = matcher.group(2);
@@ -153,7 +167,14 @@ public class MXScriptValidator
 				}
 				if (!supposedName.equals(className))
 				{
-					return new ValidationResult(false, "The class name does not match the file name or path. The class name must be '" + supposedName + (endsWithClass ? "Class" : "") + "'.");
+					if (endsWithClass && (className.endsWith(".New") || className.endsWith(".My") || className.endsWith(".MyNew")))
+					{
+						// Warning
+					}
+					else
+					{
+						return new ValidationResult(false, "The class name does not match the file name or path. The class name must be '" + supposedName + (endsWithClass ? "Class" : "") + "'.");
+					}
 				}
 			}
 		}

@@ -136,7 +136,7 @@ public class MXBuilder extends IncrementalProjectBuilder
 	private String _getModuleNameFromResource(IResource p_resource)
 	{
 		String moduleName;
-		String path = p_resource.getProjectRelativePath().makeRelativeTo(_projectResource.getScriptPath()).toString();
+		String path = p_resource.getFullPath().makeRelativeTo(_projectResource.getScriptFolder().getFullPath()).toString();
 		moduleName = path.substring(0, path.indexOf('/'));
 		return moduleName;
 	}
@@ -296,12 +296,12 @@ public class MXBuilder extends IncrementalProjectBuilder
 		{
 			return false;
 		}
-		if (!resource.getProjectRelativePath().toString().startsWith(_projectResource.getScriptPath().toString()))
+		if (!resource.getFullPath().toString().startsWith(_projectResource.getScriptFolder().getFullPath().toString()))
 		{
 			return false;
 		}
 		
-		if (resource.getProjectRelativePath().toString().startsWith(_projectResource.getScriptPath().toString() + "/lib"))
+		if (resource.getFullPath().toString().startsWith(_projectResource.getScriptFolder().getFullPath().toString() + "/lib"))
 		{
 			return false;
 		}

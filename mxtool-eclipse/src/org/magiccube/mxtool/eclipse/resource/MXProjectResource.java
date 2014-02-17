@@ -3,6 +3,7 @@ package org.magiccube.mxtool.eclipse.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -36,36 +37,19 @@ public class MXProjectResource
 		return _properties;
 	}
 
-	private Path _scriptPath = null;
-
-	public Path getScriptPath()
+	public IContainer getScriptFolder()
 	{
-		if (_scriptPath == null && _properties.getScriptPath() != null)
-		{
-			_scriptPath = new Path(_properties.getScriptPath());
-		}
-		return _scriptPath;
-	}
-
-	private IFolder _scriptFolder = null;
-
-	public IFolder getScriptFolder()
-	{
-		if (_scriptFolder == null && getScriptPath() != null)
-		{
-			_scriptFolder = _project.getFolder(getScriptPath());
-		}
-		return _scriptFolder;
+		return getProjectProperties().getScriptFolder();
 	}
 
 	public String[] getNamespaces() throws CoreException
 	{
 		List<String> result = new ArrayList<String>();
-		IFolder rootFolder = getScriptFolder();
+		IContainer rootFolder = getScriptFolder();
 		List<IFolder> subfolders = _getSubfolders(rootFolder, true);
 		for (IFolder subfolder : subfolders)
 		{
-			IPath path = subfolder.getProjectRelativePath().makeRelativeTo(getScriptPath());
+			IPath path = subfolder.getFullPath().makeRelativeTo(getScriptFolder().getFullPath());
 			String ns = path.toString().replaceAll("\\/", ".");
 			if (ns.equals("lib") || ns.startsWith("lib"))
 			{
@@ -82,11 +66,11 @@ public class MXProjectResource
 	public String[] getModuleNames() throws CoreException 
 	{
 		List<String> result = new ArrayList<String>();
-		IFolder rootFolder = getScriptFolder();
+		IContainer rootFolder = getScriptFolder();
 		List<IFolder> subfolders = _getSubfolders(rootFolder, false);
 		for (IFolder subfolder : subfolders)
 		{
-			IPath path = subfolder.getProjectRelativePath().makeRelativeTo(getScriptPath());
+			IPath path = subfolder.getFullPath().makeRelativeTo(getScriptFolder().getFullPath());
 			String ns = path.toString().replaceAll("\\/", ".");
 			if (ns.equals("lib") || ns.startsWith("lib"))
 			{
@@ -106,11 +90,11 @@ public class MXProjectResource
 		result.add("MXObject");
 		result.add("MXComponent");
 
-		IFolder rootFolder = getScriptFolder();
+		IContainer rootFolder = getScriptFolder();
 		List<IFile> jsFiles = _getJavaScripts(rootFolder);
 		for (IFile jsFile : jsFiles)
 		{
-			IPath path = jsFile.getProjectRelativePath().makeRelativeTo(getScriptPath());
+			IPath path = jsFile.getFullPath().makeRelativeTo(getScriptFolder().getFullPath());
 			String className = path.toString().replaceAll("\\/", ".");
 			className = className.substring(0, className.length() - 3);
 			if (className.startsWith("lib"))
@@ -129,7 +113,7 @@ public class MXProjectResource
 		return array;
 	}
 
-	private List<IFile> _getJavaScripts(IFolder p_parentFolder) throws CoreException
+	private List<IFile> _getJavaScripts(IContainer p_parentFolder) throws CoreException
 	{
 		List<IFile> result = new ArrayList<IFile>();
 		IResource[] members = p_parentFolder.members();
@@ -163,7 +147,7 @@ public class MXProjectResource
 		return result;
 	}
 
-	private List<IFolder> _getSubfolders(IFolder p_parentFolder, boolean p_recursive) throws CoreException
+	private List<IFolder> _getSubfolders(IContainer p_parentFolder, boolean p_recursive) throws CoreException
 	{
 		List<IFolder> result = new ArrayList<IFolder>();
 		IResource[] members = p_parentFolder.members();
@@ -207,7 +191,7 @@ public class MXProjectResource
 		{
 			p_className = "mx.MXComponent";
 		}
-		return getScriptFolder().getFile(p_className.replaceAll("\\.", "\\/") + "." + p_extension);
+		return getScriptFolder().getFile(Path.fromOSString(p_className.replaceAll("\\.", "\\/") + "." + p_extension));
 	}
 
 	public IFile getFileOfClass(String p_className)
@@ -217,7 +201,7 @@ public class MXProjectResource
 
 	public IFolder getFolderOfNamespace(String p_namespace)
 	{
-		return getScriptFolder().getFolder(p_namespace.replaceAll("\\.", "\\/"));
+		return getScriptFolder().getFolder(Path.fromOSString(p_namespace.replaceAll("\\.", "\\/")));
 	}
 
 	public String getClassNameOfFile(IFile p_file)
@@ -227,7 +211,7 @@ public class MXProjectResource
 
 	public String getNamespaceOfFile(IFile p_file)
 	{
-		return p_file.getParent().getProjectRelativePath().makeRelativeTo(getScriptPath()).toString().replaceAll("\\/", ".");
+		return p_file.getParent().getFullPath().makeRelativeTo(getScriptFolder().getFullPath()).toString().replaceAll("\\/", ".");
 	}
 
 	public boolean hasClass(String p_className)
