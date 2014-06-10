@@ -238,9 +238,13 @@ public class MXModuleBuild
     {
         try
         {
-        	String path = new File(args[0]).getAbsolutePath();
-            MXModuleBuild build = new MXModuleBuild(path);
-            build.buildModule();
+        	String[] parts = args[0].split(";");
+        	for (int i = 0; i < parts.length; i++)
+        	{
+	        	String path = new File(parts[i].trim()).getAbsolutePath();
+	            MXModuleBuild build = new MXModuleBuild(path);
+	            build.buildModule();
+        	}
         }
         catch (IOException e)
         {
