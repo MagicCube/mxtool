@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MXFramework Toolkit for Eclipse
 Bundle-SymbolicName: org.magiccube.mxtool.eclipse; singleton:=true
-Bundle-Version: 0.1.0
+Bundle-Version: 0.1.1
 Bundle-Activator: org.magiccube.mxtool.eclipse.Activator
 Bundle-Vendor: MagicCube
 Require-Bundle: org.eclipse.ui,
