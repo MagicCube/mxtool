@@ -16,7 +16,6 @@ public class MXAppCssGenerator extends CssGenerator
 		builder.append("html, body\n");
 		builder.append("{\n");
 		builder.append("    width: 100%;\n");
-		builder.append("    height: 100%;\n");
 		builder.append("    margin: 0;\n");
 		builder.append("    padding: 0;\n");
 		builder.append("}\n\n");
