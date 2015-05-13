@@ -2,7 +2,7 @@ MXTool
 ======
 MXTool is an Eclipse Plugins for MXFramework. MagicCube MXFramework is a lightweight Object-Oriented JavaScript framework.
 
-For documents, see https://github.com/MagicCube/mxframework-core/wiki
+Please refer to https://github.com/MagicCube/mxframework-core
 
 ## Installation
 1. Open Eclipse.
