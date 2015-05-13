@@ -9,8 +9,6 @@ public class MXAppCssGenerator extends CssGenerator
 		builder.append("{\n");
 		builder.append("    box-sizing: border-box;\n");
 		builder.append("    font-family: 'Microsoft Yahei', Verdana, 'Helvetica Neue', 'BBAlpha Sans', 'S60 Sans', Arial, sans-serif;\n");
-		builder.append("    -webkit-font-smoothing: antialiased;\n");
-		builder.append("	-webkit-text-size-adjust: none;\n");
 		builder.append("}\n\n");
 		
 		builder.append("html, body\n");
