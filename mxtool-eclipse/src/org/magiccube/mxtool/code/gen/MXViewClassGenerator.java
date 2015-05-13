@@ -26,7 +26,7 @@ public class MXViewClassGenerator extends MXClassGenerator
 				ns = p_options.namespace.substring(0, pos) + ".res.";
 			}
 			String cssFile = ns + p_options.className + ".css";
-			builder.append("$include(\"" + cssFile + "\");\r\n");
+			builder.append("$include(\"" + cssFile + "\");\n");
 		}
 	}
 
@@ -36,7 +36,7 @@ public class MXViewClassGenerator extends MXClassGenerator
 		super.writeVarMe(builder, p_options);
 		if (p_options.genCss)
 		{
-			builder.append("    me.elementClass = \"" + p_options.className + "\";\r\n");
+			builder.append("    me.elementClass = \"" + p_options.className + "\";\n");
 		}
 	}
 }

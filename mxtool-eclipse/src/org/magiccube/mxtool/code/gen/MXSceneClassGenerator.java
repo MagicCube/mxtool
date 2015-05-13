@@ -15,11 +15,11 @@ public class MXSceneClassGenerator extends MXClassGenerator
 		super.writeVarMe(builder, p_options);
 		if (p_options.properties.get("sceneTitle") != null)
 		{
-			builder.append("    me.title = \"" + p_options.properties.get("sceneTitle") + "\";\r\n");
+			builder.append("    me.title = \"" + p_options.properties.get("sceneTitle") + "\";\n");
 		}
 		if (p_options.genCss)
 		{
-			builder.append("    me.autoFillParent = " + p_options.properties.get("autoFillParent") + ";\r\n");
+			builder.append("    me.autoFillParent = " + p_options.properties.get("autoFillParent") + ";\n");
 		}
 	}
 	
@@ -30,20 +30,20 @@ public class MXSceneClassGenerator extends MXClassGenerator
 		
 		if ((Boolean)p_options.properties.get("overrideActivate"))
 		{
-			builder.append("    base.activate = me.activate;\r\n");
-			builder.append("    me.activate = function(args, isPoppedBack)\r\n");
-			builder.append("    {\r\n");
-			builder.append("        base.activate(args, isPoppedBack);\r\n\r\n");
-			builder.append("        if (!isPoppedBack)\r\n");
-			builder.append("        {\r\n");
-			builder.append("            // TODO the scene is activated normally.\r\n");
-			builder.append("            console.log(\"").append(p_options.getFullClassName()).append(" is now activated.\");\r\n");
-			builder.append("        }\r\n");
-			builder.append("        else\r\n");
-			builder.append("        {\r\n");
-			builder.append("            // TODO the scene is activated when popped back after the user pressed 'Back' button.\r\n");
-			builder.append("        }\r\n");
-			builder.append("    };\r\n");
+			builder.append("    base.activate = me.activate;\n");
+			builder.append("    me.activate = function(args, isPoppedBack)\n");
+			builder.append("    {\n");
+			builder.append("        base.activate(args, isPoppedBack);\n\n");
+			builder.append("        if (!isPoppedBack)\n");
+			builder.append("        {\n");
+			builder.append("            // TODO the scene is activated normally.\n");
+			builder.append("            console.log(\"").append(p_options.getFullClassName()).append(" is now activated.\");\n");
+			builder.append("        }\n");
+			builder.append("        else\n");
+			builder.append("        {\n");
+			builder.append("            // TODO the scene is activated when popped back after the user pressed 'Back' button.\n");
+			builder.append("        }\n");
+			builder.append("    };\n");
 		}
 	}
 }

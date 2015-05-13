@@ -15,13 +15,13 @@ public class MXSceneHtmlGenerator extends MXHtmlGenerator
 		super.writeMXWhenReadyScriptCode(builder, p_options);
 		
 		String instanceName = p_options.className.substring(0, 1).toLowerCase() + p_options.className.substring(1);
-		builder.append("    var ").append(instanceName).append(" = new ").append(p_options.getFullClassName()).append("({\r\n");
-		builder.append("        id: \"" + instanceName.replace("Scene", "") + "\"\r\n");
-		builder.append("    });\r\n");
-		builder.append("    $(document.body).append(").append(instanceName).append(".$element);\r\n");
-		builder.append("    \r\n");
-		builder.append("    var args = { };\r\n");
-		builder.append("    ").append(instanceName).append(".activate(args, false);\r\n");
+		builder.append("    var ").append(instanceName).append(" = new ").append(p_options.getFullClassName()).append("({\n");
+		builder.append("        id: \"" + instanceName.replace("Scene", "") + "\"\n");
+		builder.append("    });\n");
+		builder.append("    $(document.body).append(").append(instanceName).append(".$element);\n");
+		builder.append("    \n");
+		builder.append("    var args = { };\n");
+		builder.append("    ").append(instanceName).append(".activate(args, false);\n");
 	}
 	
 }

@@ -26,7 +26,7 @@ public class MXAppClassGenerator extends MXClassGenerator
 				ns = p_options.namespace.substring(0, pos) + ".res.";
 			}
 			String cssFile = ns + p_options.className + ".css";
-			builder.append("$include(\"" + cssFile + "\");\r\n");
+			builder.append("$include(\"" + cssFile + "\");\n");
 		}
 	}
 
@@ -34,10 +34,10 @@ public class MXAppClassGenerator extends MXClassGenerator
 	protected void writeVarMe(StringBuilder builder, MXClassGenOptions p_options)
 	{
 		super.writeVarMe(builder, p_options);
-		builder.append("    me.appId = \"").append(p_options.getFullClassName()).append("\";\r\n");
-		if (p_options.properties.get("appDisplayName") != null)
+		builder.append("    me.appId = \"").append(p_options.getFullClassName().replaceAll("\\.", "-")).append("\";\n");
+		if (p_options.properties.get("appDisplayName") != null && p_options.properties.get("appDisplayName").toString().trim() != "")
 		{
-			builder.append("    me.appDisplayName = \"" + p_options.properties.get("appDisplayName") + "\";\r\n");
+			builder.append("    me.appDisplayName = \"" + p_options.properties.get("appDisplayName") + "\";\n");
 		}
 	}
 
@@ -46,12 +46,12 @@ public class MXAppClassGenerator extends MXClassGenerator
 	{
 		super.writeBody(builder, p_options);
 
-		builder.append("    base.run = me.run;\r\n");
-		builder.append("    me.run = function(args)\r\n");
-		builder.append("    {\r\n");
-		builder.append("        // TODO add your application starting logic here.\r\n");
-		builder.append("        console.log(\"").append(p_options.getFullClassName()).append(" is now running.\");\r\n");
-		builder.append("    \r\n");
-		builder.append("    };\r\n");
+		builder.append("    base.run = me.run;\n");
+		builder.append("    me.run = function(args)\n");
+		builder.append("    {\n");
+		builder.append("        // TODO add your application starting logic here.\n");
+		builder.append("        console.log(\"").append(p_options.getFullClassName()).append(" is now running.\");\n");
+		builder.append("    \n");
+		builder.append("    };\n");
 	}
 }

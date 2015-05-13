@@ -5,42 +5,46 @@ public class MXAppCssGenerator extends CssGenerator
 	public StringBuilder generateCode(MXClassGenOptions p_options)
 	{
 		StringBuilder builder = new StringBuilder();		
-		builder.append("*\r\n");
-		builder.append("{\r\n");
-		builder.append("    box-sizing: border-box;\r\n");
-		builder.append("    font-family: 'Microsoft Yahei', Verdana, 'Helvetica Neue', 'BBAlpha Sans', 'S60 Sans', Arial, sans-serif;\r\n");
-		builder.append("    font-size: 88%;\r\n");
-		builder.append("    -webkit-font-smoothing: antialiased;\r\n");
-		builder.append("	-webkit-text-size-adjust: none;\r\n");
-		builder.append("}\r\n\r\n");
+		builder.append("*\n");
+		builder.append("{\n");
+		builder.append("    box-sizing: border-box;\n");
+		builder.append("    font-family: 'Microsoft Yahei', Verdana, 'Helvetica Neue', 'BBAlpha Sans', 'S60 Sans', Arial, sans-serif;\n");
+		builder.append("    -webkit-font-smoothing: antialiased;\n");
+		builder.append("	-webkit-text-size-adjust: none;\n");
+		builder.append("}\n\n");
 		
-		builder.append("html, body\r\n");
-		builder.append("{\r\n");
-		builder.append("    width: 100%;\r\n");
-		builder.append("    height: 100%;\r\n");
-		builder.append("    margin: 0;\r\n");
-		builder.append("    padding: 0;\r\n");
-		builder.append("}\r\n\r\n");
+		builder.append("html, body\n");
+		builder.append("{\n");
+		builder.append("    width: 100%;\n");
+		builder.append("    height: 100%;\n");
+		builder.append("    margin: 0;\n");
+		builder.append("    padding: 0;\n");
+		builder.append("}\n\n");
 
-		builder.append("body\r\n");
-		builder.append("{\r\n");
-		builder.append("    overflow: hidden;\r\n");
-		builder.append("}\r\n\r\n");
+		builder.append("body\n");
+		builder.append("{\n");
+		builder.append("    font-size: 14px;");
+		builder.append("}\n\n");
 		
-		builder.append("a\r\n");
-		builder.append("{\r\n");
-		builder.append("    color: blue;\r\n");
-		builder.append("}\r\n\r\n");
+		builder.append("a\n");
+		builder.append("{\n");
+		builder.append("    color: #337ab7;\n");
+		builder.append("    text-decoration: none;\n");
+		builder.append("}\n");
+		builder.append("a:hover\n");
+		builder.append("{\n");
+		builder.append("    text-decoration: underline;\n");
+		builder.append("}\n\n");
 
-		builder.append("img\r\n");
-		builder.append("{\r\n");
-		builder.append("    border: none;\r\n");
-		builder.append("}\r\n\r\n");
+		builder.append("img\n");
+		builder.append("{\n");
+		builder.append("    border: none;\n");
+		builder.append("}\n\n");
 		
-		builder.append(".mx-app\r\n");
-		builder.append("{\r\n");
-		builder.append("    \r\n");
-		builder.append("}\r\n\r\n");
+		builder.append(".mx-app\n");
+		builder.append("{\n");
+		builder.append("    \n");
+		builder.append("}\n\n");
 		
 		return builder;
 	}
