@@ -34,7 +34,17 @@ public class MXAppClassGenerator extends MXClassGenerator
 	protected void writeVarMe(StringBuilder builder, MXClassGenOptions p_options)
 	{
 		super.writeVarMe(builder, p_options);
-		builder.append("    me.appId = \"").append(p_options.getFullClassName().replaceAll("\\.", "-")).append("\";\n");
+		String appId = p_options.getFullClassName().replaceAll("\\.", "-").toLowerCase();
+		if (appId.endsWith("-app-application"))
+		{
+			appId = appId.replace("-app-application", "-app");
+		}
+		else if (appId.endsWith("-app-app"))
+		{
+			appId = appId.replace("-app-app", "-app");
+		}
+		
+		builder.append("    me.appId = \"").append(appId).append("\";\n");
 		if (p_options.properties.get("appDisplayName") != null && p_options.properties.get("appDisplayName").toString().trim() != "")
 		{
 			builder.append("    me.appDisplayName = \"" + p_options.properties.get("appDisplayName") + "\";\n");

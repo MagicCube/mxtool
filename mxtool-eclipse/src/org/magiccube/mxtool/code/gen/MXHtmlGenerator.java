@@ -62,7 +62,7 @@ public abstract class MXHtmlGenerator
 		builder.append("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n");
 		builder.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
 		builder.append("<title>").append(getTitle(p_options)).append("</title>\n");
-		builder.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\">");
+		builder.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\">\n");
 		writeMXFramework(builder, p_options);
 	}
 	

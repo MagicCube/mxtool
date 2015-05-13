@@ -22,7 +22,7 @@ public class MXAppCssGenerator extends CssGenerator
 		
 		builder.append("html\n");
 		builder.append("{\n");
-		builder.append("	-webkit-tap-highlight-color: black;");
+		builder.append("	-webkit-tap-highlight-color: black;\n");
 		builder.append("}\n\n");
 
 		builder.append("body\n");
